@@ -1,0 +1,377 @@
+<!DOCTYPE html><html lang="CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>1.配置环境（RHEL） | xiaoxi-blog</title><meta name="author" content="Xiaoxi"><meta name="copyright" content="Xiaoxi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="如果已安装metrics-server需要先卸载，否则冲突   组件说明 ---   MetricServer：是kubernetes集群资源使用情况的聚合器，收集数据给kubernetes集群内使用，如kubectl,hpa,scheduler等。 PrometheusOperator：是一个系统监测和警报工具箱，用来存储监控数据。 NodeExporter：用于各node的关键度量指标状态数">
+<meta property="og:type" content="website">
+<meta property="og:title" content="1.配置环境（RHEL）">
+<meta property="og:url" content="https://www.xiaoxi.ink/k8s/12%E9%83%A8%E7%BD%B2Prometheus%E7%9B%91%E6%8E%A7.html">
+<meta property="og:site_name" content="xiaoxi-blog">
+<meta property="og:description" content="如果已安装metrics-server需要先卸载，否则冲突   组件说明 ---   MetricServer：是kubernetes集群资源使用情况的聚合器，收集数据给kubernetes集群内使用，如kubectl,hpa,scheduler等。 PrometheusOperator：是一个系统监测和警报工具箱，用来存储监控数据。 NodeExporter：用于各node的关键度量指标状态数">
+<meta property="og:locale">
+<meta property="og:image" content="https://www.xiaoxi.ink/img/idea.jpg">
+<meta property="article:published_time" content="2025-03-11T10:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-11T10:00:00.000Z">
+<meta property="article:author" content="Xiaoxi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaoxi.ink/img/idea.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.xiaoxi.ink/k8s/12%E9%83%A8%E7%BD%B2Prometheus%E7%9B%91%E6%8E%A7.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '1.配置环境（RHEL）',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="web_bg" style="background-image: url(/img/background.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoxi-blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">1.配置环境（RHEL）</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><blockquote>
+<p><font style="background-color:rgba(255, 255, 255, 0);">如果已安装metrics-server需要先卸载，否则冲突</font></p>
+</blockquote>
+<p><font style="background-color:rgba(255, 255, 255, 0);"></font></p>
+<h1 id="adfb3ce8"><font style="background-color:rgba(255, 255, 255, 0);">组件说明</font></h1>
+---
+
+<ol>
+<li><font style="background-color:rgba(255, 255, 255, 0);">MetricServer：是kubernetes集群资源使用情况的聚合器，收集数据给kubernetes集群内使用，如kubectl,hpa,scheduler等。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">PrometheusOperator：是一个系统监测和警报工具箱，用来存储监控数据。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">NodeExporter：用于各node的关键度量指标状态数据。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">KubeStateMetrics：收集kubernetes集群内资源对象数据，制定告警规则。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">Prometheus：采用pull方式收集apiserver，scheduler，controller-manager，kubelet组件数据，通过http协议传输。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">Grafana：是可视化数据统计和监控平台。</font></li>
+</ol>
+<p><font style="background-color:rgba(255, 255, 255, 0);"></font></p>
+<h1 id="039d392c"><font style="background-color:rgba(255, 255, 255, 0);">安装部署</font></h1>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">项目地址：</font><a target="_blank" rel="noopener" href="https://github.com/prometheus-operator/kube-prometheus"><font style="background-color:rgba(255, 255, 255, 0);">https://github.com/prometheus-operator/kube-prometheus</font></a></p>
+<h2 id="6a6cc2b2"><font style="background-color:rgba(255, 255, 255, 0);">克隆项目至本地</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/prometheus-operator/kube-prometheus.git</span><br></pre></td></tr></table></figure>
+
+<h2 id="1dcabd41"><font style="background-color:rgba(255, 255, 255, 0);">创建资源对象</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@master1 k8s-install]# kubectl create namespace monitoring </span><br><span class="line">[root@master1 k8s-install]# cd kube-prometheus/</span><br><span class="line">[root@master1 kube-prometheus]# kubectl apply --server-side -f manifests/setup</span><br><span class="line">[root@master1 kube-prometheus]# kubectl wait \</span><br><span class="line">	--for condition=Established \</span><br><span class="line">	--all CustomResourceDefinition \</span><br><span class="line">	--namespace=monitoring</span><br><span class="line">[root@master1 kube-prometheus]# kubectl apply -f manifests/</span><br></pre></td></tr></table></figure>
+
+<h2 id="fea33636"><font style="background-color:rgba(255, 255, 255, 0);">验证查看</font></h2>
+---
+
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">查看pod状态</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@master1 kube-prometheus]# kubectl get pod -n monitoring </span><br><span class="line">NAME                                   READY   STATUS    RESTARTS   AGE</span><br><span class="line">alertmanager-main-0                    2/2     Running   0          61s</span><br><span class="line">alertmanager-main-1                    2/2     Running   0          61s</span><br><span class="line">alertmanager-main-2                    2/2     Running   0          61s</span><br><span class="line">blackbox-exporter-576df9484f-lr6xd     3/3     Running   0          107s</span><br><span class="line">grafana-795ddfd4bd-jxlrw               1/1     Running   0          105s</span><br><span class="line">kube-state-metrics-bdfdcd5cd-7dgwl     3/3     Running   0          104s</span><br><span class="line">node-exporter-4qnrz                    2/2     Running   0          104s</span><br><span class="line">node-exporter-8hjr7                    2/2     Running   0          104s</span><br><span class="line">node-exporter-8s5hp                    2/2     Running   0          103s</span><br><span class="line">node-exporter-kgb48                    2/2     Running   0          104s</span><br><span class="line">node-exporter-p8b7q                    2/2     Running   0          103s</span><br><span class="line">node-exporter-v4nz7                    2/2     Running   0          103s</span><br><span class="line">prometheus-adapter-65b6bd474c-qvdb8    1/1     Running   0          102s</span><br><span class="line">prometheus-adapter-65b6bd474c-vlxhn    1/1     Running   0          102s</span><br><span class="line">prometheus-k8s-0                       1/2     Running   0          58s</span><br><span class="line">prometheus-k8s-1                       2/2     Running   0          58s</span><br><span class="line">prometheus-operator-6565b7b5f5-mgclf   2/2     Running   0          101s</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">查看top信息</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@master1 kube-prometheus]# kubectl top node</span><br><span class="line">NAME      CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   </span><br><span class="line">master1   579m         14%    2357Mi          66%       </span><br><span class="line">master2   383m         9%     1697Mi          48%       </span><br><span class="line">master3   482m         12%    2069Mi          58%       </span><br><span class="line">work1     131m         3%     1327Mi          37%       </span><br><span class="line">work2     132m         3%     1134Mi          32%       </span><br><span class="line">work3     176m         4%     1100Mi          31%       </span><br><span class="line">[root@master1 kube-prometheus]# kubectl top pod</span><br><span class="line">NAME                     CPU(cores)   MEMORY(bytes)   </span><br><span class="line">myapp-58bbc79c4f-cc9g5   0m           1Mi             </span><br><span class="line">myapp-58bbc79c4f-txnp5   0m           1Mi             </span><br><span class="line">myapp-58bbc79c4f-zvlcr   0m           1Mi</span><br></pre></td></tr></table></figure>
+
+<h2 id="200078c4"><font style="background-color:rgba(255, 255, 255, 0);">新增ingress资源</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">以ingress-nginx为例：</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">[root@master1 manifests]# cat ingress.yaml</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: Ingress</span><br><span class="line">metadata:</span><br><span class="line">  name: alertmanager</span><br><span class="line">  namespace: monitoring</span><br><span class="line">  annotations:</span><br><span class="line">    nginx.ingress.kubernetes.io/rewrite-target: /</span><br><span class="line">spec:</span><br><span class="line">  ingressClassName: nginx</span><br><span class="line">  rules:</span><br><span class="line">  - host: alertmanager.local.com</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        pathType: Prefix</span><br><span class="line">        backend:</span><br><span class="line">          service:</span><br><span class="line">            name: alertmanager-main</span><br><span class="line">            port:</span><br><span class="line">              number: 9093 </span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: Ingress</span><br><span class="line">metadata:</span><br><span class="line">  name: grafana</span><br><span class="line">  namespace: monitoring</span><br><span class="line">  annotations:</span><br><span class="line">    nginx.ingress.kubernetes.io/rewrite-target: /</span><br><span class="line">spec:</span><br><span class="line">  ingressClassName: nginx</span><br><span class="line">  rules:</span><br><span class="line">  - host: grafana.local.com</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        pathType: Prefix</span><br><span class="line">        backend:</span><br><span class="line">          service:</span><br><span class="line">            name: grafana</span><br><span class="line">            port:</span><br><span class="line">              number: 3000</span><br><span class="line">---</span><br><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: Ingress</span><br><span class="line">metadata:</span><br><span class="line">  name: prometheus</span><br><span class="line">  namespace: monitoring</span><br><span class="line">  annotations:</span><br><span class="line">    nginx.ingress.kubernetes.io/rewrite-target: /</span><br><span class="line">spec:</span><br><span class="line">  ingressClassName: nginx</span><br><span class="line">  rules:</span><br><span class="line">  - host: prometheus.local.com</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">      - path: /</span><br><span class="line">        pathType: Prefix</span><br><span class="line">        backend:</span><br><span class="line">          service:</span><br><span class="line">            name: prometheus-k8s</span><br><span class="line">            port:</span><br><span class="line">              number: 9090</span><br></pre></td></tr></table></figure>
+
+<h2 id="10b4cf9a"><font style="background-color:rgba(255, 255, 255, 0);">web访问验证</font></h2>
+---
+
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">新增hosts解析记录</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.10.10 alertmanager.local.com grafana.local.com prometheus.local.com</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">访问</font><a target="_blank" rel="noopener" href="http://alertmanager.local.com/"><font style="background-color:rgba(255, 255, 255, 0);">http://alertmanager.local.com/</font></a><font style="background-color:rgba(255, 255, 255, 0);">，查看当前激活的告警</font></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737813858882-40dfbb97-749d-4cf4-b79b-02dfa018a3fa.jpeg"></p>
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">访问</font><a target="_blank" rel="noopener" href="http://prometheus.local.com/targets"><font style="background-color:rgba(255, 255, 255, 0);">http://prometheus.local.com/targets</font></a><font style="background-color:rgba(255, 255, 255, 0);">，查看targets已全部up</font></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737813870278-f52a4a68-aca7-4ea7-8964-0be9efccd42e.jpeg"></p>
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">访问</font><a target="_blank" rel="noopener" href="http://grafana.local.com/login"><font style="background-color:rgba(255, 255, 255, 0);">http://grafana.local.com/login</font></a><font style="background-color:rgba(255, 255, 255, 0);">，默认用户名和密码是admin&#x2F;admin</font></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737813882935-61131e36-ed0a-41fd-9c20-ea4e8a71edc2.jpeg"></p>
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">查看数据源，以为我们自动配置Prometheus数据源</font></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737813895510-86a615e8-c0a0-4c36-bb6b-b9b40d22ed5d.jpeg"></p>
+<h2 id="8094d557"><font style="background-color:rgba(255, 255, 255, 0);">targets异常处理</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">查看targets可发现有两个监控任务没有对应的instance，这和serviceMonitor资源对象有关</font></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737813909963-bdc64819-89b3-4ed4-9071-a8e3fcd6c7e6.jpeg"></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">由于prometheus-serviceMonitorKubeScheduler文件中，selector匹配的是service的标签，但是namespace中并没有app.kubernetes.io&#x2F;name的service</font></p>
+<ol>
+<li><font style="background-color:rgba(255, 255, 255, 0);">新建prometheus-kubeSchedulerService.yaml并apply创建资源</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">    namespace: kube-system</span><br><span class="line">    name: kube-scheduler</span><br><span class="line">    labels:</span><br><span class="line">      app.kubernetes.io/name: kube-scheduler</span><br><span class="line">spec:</span><br><span class="line">    selector:</span><br><span class="line">      component: kube-scheduler</span><br><span class="line">    type: ClusterIP</span><br><span class="line">    ports:</span><br><span class="line">    - name: https-metrics</span><br><span class="line">      port: 10259</span><br><span class="line">      targetPort: 10259</span><br><span class="line">      protocol: TCP</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><font style="background-color:rgba(255, 255, 255, 0);">新建prometheus-kubeControllerManagerService.yaml并apply创建资源</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">    namespace: kube-system</span><br><span class="line">    name: kube-controller-manager</span><br><span class="line">    labels:</span><br><span class="line">      app.kubernetes.io/name: kube-controller-manager</span><br><span class="line">spec:</span><br><span class="line">    selector:</span><br><span class="line">      component: kube-controller-manager</span><br><span class="line">    type: ClusterIP</span><br><span class="line">    ports:</span><br><span class="line">    - name: https-metrics</span><br><span class="line">      port: 10257</span><br><span class="line">      targetPort: 10257</span><br><span class="line">      protocol: TCP</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><font style="background-color:rgba(255, 255, 255, 0);">再次查看targets信息</font></li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737813969703-36af3983-6b25-42e6-afaf-b85b13f7855e.jpeg"></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">发现虽然加载了targets，但是无法访问该端口。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">需要请修改master节点的&#x2F;etc&#x2F;kubernetes&#x2F;manifests&#x2F;kube-controller-manager.yaml 文件和 &#x2F;etc&#x2F;kubernetes&#x2F;manifests&#x2F;kube-scheduler.yaml 文件，将其中的 - –bind-address&#x3D;127.0.0.1 修改为 - –bind-address&#x3D;0.0.0.0</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">修改完保存文件，pod会自动重启。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);"></font></p>
+<h1 id="48a6122b"><font style="background-color:rgba(255, 255, 255, 0);">部署pushgateway(可选)</font></h1>
+---
+
+<h2 id="5e69a94c"><font style="background-color:rgba(255, 255, 255, 0);">创建资源清单</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">pushgateway目录下，创建这三个yaml文件。</font></p>
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">prometheus-pushgatewayServiceMonitor.yaml</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: monitoring.coreos.com/v1</span><br><span class="line">kind: ServiceMonitor</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    prometheus: k8s</span><br><span class="line">  name: prometheus-pushgateway</span><br><span class="line">  namespace: monitoring</span><br><span class="line">spec:</span><br><span class="line">  endpoints:</span><br><span class="line">  - honorLabels: true</span><br><span class="line">    port: http</span><br><span class="line">  jobLabel: pushgateway</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: prometheus-pushgateway</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">prometheus-pushgatewayService.yaml</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    app: prometheus-pushgateway</span><br><span class="line">  name: prometheus-pushgateway</span><br><span class="line">  namespace: monitoring</span><br><span class="line">spec:</span><br><span class="line">  type: NodePort</span><br><span class="line">  ports:</span><br><span class="line">  - name: http</span><br><span class="line">    port: 9091</span><br><span class="line">    nodePort: 30400</span><br><span class="line">    targetPort: metrics</span><br><span class="line">  selector:</span><br><span class="line">    app: prometheus-pushgateway</span><br><span class="line">#  type: ClusterIP</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">prometheus-pushgatewayDeployment.yaml</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    app: prometheus-pushgateway</span><br><span class="line">  name: prometheus-pushgateway</span><br><span class="line">  namespace: monitoring</span><br><span class="line">spec:</span><br><span class="line">  replicas: 1</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: prometheus-pushgateway</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: prometheus-pushgateway</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - image: prom/pushgateway:v1.10.0</span><br><span class="line">        livenessProbe:</span><br><span class="line">          httpGet:</span><br><span class="line">            path: /#/status</span><br><span class="line">            port: 9091</span><br><span class="line">          initialDelaySeconds: 10</span><br><span class="line">          timeoutSeconds: 10</span><br><span class="line">        name: prometheus-pushgateway</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 9091</span><br><span class="line">          name: metrics</span><br><span class="line">        readinessProbe:</span><br><span class="line">          httpGet:</span><br><span class="line">            path: /#/status</span><br><span class="line">            port: 9091</span><br><span class="line">          initialDelaySeconds: 10</span><br><span class="line">          timeoutSeconds: 10</span><br><span class="line">        resources:</span><br><span class="line">          limits:</span><br><span class="line">            cpu: 50m</span><br><span class="line">            memory: 100Mi</span><br><span class="line">          requests:</span><br><span class="line">            cpu: 50m</span><br><span class="line">            memory: 100Mi</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">prometheus-ingress.yaml</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: traefik.io/v1alpha1</span><br><span class="line">kind: IngressRoute</span><br><span class="line">metadata:</span><br><span class="line">  name: prometheus-pushgateway</span><br><span class="line">  namespace: monitoring</span><br><span class="line">spec:</span><br><span class="line">  entryPoints:</span><br><span class="line">  - web</span><br><span class="line">  routes:</span><br><span class="line">  - match: Host(`prometheus-pushgateway.local.com`)</span><br><span class="line">    kind: Rule</span><br><span class="line">    services:</span><br><span class="line">      - name: prometheus-pushgateway</span><br><span class="line">        port: 9091</span><br></pre></td></tr></table></figure>
+
+<h2 id="e8928169"><font style="background-color:rgba(255, 255, 255, 0);">创建资源</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f .</span><br></pre></td></tr></table></figure>
+
+<h2 id="eca8abf0"><font style="background-color:rgba(255, 255, 255, 0);">查看验证</font></h2>
+---
+
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737814086186-b0c70632-a294-474f-8d17-9514ff77cd90.jpeg"></p>
+<h1 id="1f318234"><font style="background-color:rgba(255, 255, 255, 0);">高级配置</font></h1>
+---
+
+<h2 id="3b5e4f43"><font style="background-color:rgba(255, 255, 255, 0);">Grafana配置修改</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">默认grafana使用UTC时区和sqllite数据库，可按需调整</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># pwd</span><br><span class="line">/opt/k8s/kube-prometheus/manifests</span><br><span class="line"># cat grafana-config.yaml                </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Secret</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    app.kubernetes.io/component: grafana</span><br><span class="line">    app.kubernetes.io/name: grafana</span><br><span class="line">    app.kubernetes.io/part-of: kube-prometheus</span><br><span class="line">    app.kubernetes.io/version: 11.2.1</span><br><span class="line">  name: grafana-config</span><br><span class="line">  namespace: monitoring</span><br><span class="line">stringData:</span><br><span class="line">  grafana.ini: |</span><br><span class="line">    [date_formats] # 时区设置</span><br><span class="line">    default_timezone = Asia/Shanghai</span><br><span class="line">    [database] # 数据库设置</span><br><span class="line">    type = mysql</span><br><span class="line">    host = cluster-mysql-master.mysql.svc:3306</span><br><span class="line">    name = grafana</span><br><span class="line">    user = grafana</span><br><span class="line">    password = password</span><br><span class="line">type: Opaque</span><br></pre></td></tr></table></figure>
+
+<h2 id="e80a0cad"><font style="background-color:rgba(255, 255, 255, 0);">数据持久化存储</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">默认的的存储为</font><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;emptyDir&lt;/font&gt;</code><font style="background-color:rgba(255, 255, 255, 0);">，生产环境建议更换为</font><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;persistentVolumeClaim&lt;/font&gt;</code></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建grafana-pvc</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># cat grafana-pvc.yaml      </span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: grafana-pvc</span><br><span class="line">  namespace: monitoring</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 500Mi</span><br><span class="line"># kubectl apply -f grafana-pvc.yaml   </span><br><span class="line">persistentvolumeclaim/grafana-pvc created</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">修改grafana</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># cp /opt/k8s/kube-prometheus/manifests/grafana-deployment.yaml .</span><br><span class="line"># vim grafana-deployment.yaml </span><br><span class="line">volumes:</span><br><span class="line">- name: grafana-storage</span><br><span class="line">  persistentVolumeClaim:</span><br><span class="line">    claimName: grafana-pvc</span><br><span class="line"># kubectl apply -f grafana-deployment.yaml </span><br><span class="line">deployment.apps/grafana configured</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">修改prometheus</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># cp /opt/k8s/kube-prometheus/manifests/prometheus-prometheus.yaml .</span><br><span class="line"># vim prometheus-prometheus.yaml </span><br><span class="line">spec:</span><br><span class="line">  image: quay.io/prometheus/prometheus:v2.54.1</span><br><span class="line">  retention: 30d # 数据保留天数</span><br><span class="line">  storage: # 持久化配置</span><br><span class="line">    volumeClaimTemplate:</span><br><span class="line">      spec:</span><br><span class="line">        storageClassName: nfs   </span><br><span class="line">        accessModes: [&quot;ReadWriteOnce&quot;]</span><br><span class="line">        resources:</span><br><span class="line">          requests:</span><br><span class="line">            storage: 500Gi</span><br><span class="line"># kubectl apply -f prometheus-prometheus.yaml          </span><br><span class="line">prometheus.monitoring.coreos.com/k8s configured</span><br></pre></td></tr></table></figure>
+
+<h2 id="f28d5761"><font style="background-color:rgba(255, 255, 255, 0);">node exporter新增ip标签</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">默认情况下node exporter指标只有主机名没有ip标签，可添加全局IP标签。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"># cp ../kube-prometheus/manifests/nodeExporter-serviceMonitor.yaml .</span><br><span class="line"># vim nodeExporter-serviceMonitor.yaml </span><br><span class="line">apiVersion: monitoring.coreos.com/v1</span><br><span class="line">kind: ServiceMonitor</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    app.kubernetes.io/component: exporter</span><br><span class="line">    app.kubernetes.io/name: node-exporter</span><br><span class="line">    app.kubernetes.io/part-of: kube-prometheus</span><br><span class="line">    app.kubernetes.io/version: 1.8.2</span><br><span class="line">  name: node-exporter</span><br><span class="line">  namespace: monitoring</span><br><span class="line">spec:</span><br><span class="line">  endpoints:</span><br><span class="line">  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token</span><br><span class="line">    interval: 15s</span><br><span class="line">    port: https</span><br><span class="line">    relabelings:</span><br><span class="line">    - action: replace</span><br><span class="line">      regex: (.*)</span><br><span class="line">      replacement: $1</span><br><span class="line">      sourceLabels:</span><br><span class="line">      - __meta_kubernetes_pod_node_name</span><br><span class="line">      targetLabel: instance</span><br><span class="line">    - action: replace</span><br><span class="line">      sourceLabels: </span><br><span class="line">      - __meta_kubernetes_pod_host_ip</span><br><span class="line">      targetLabel: ip</span><br><span class="line">    scheme: https</span><br><span class="line">    tlsConfig:</span><br><span class="line">      insecureSkipVerify: true</span><br><span class="line">  jobLabel: app.kubernetes.io/name</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app.kubernetes.io/component: exporter</span><br><span class="line">      app.kubernetes.io/name: node-exporter</span><br><span class="line">      app.kubernetes.io/part-of: kube-prometheus</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);"></font></p>
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Xiaoxi</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/jack-xi-jack" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1643699428@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/Istio/" title="Istio">Istio</a><time datetime="2025-03-08T10:00:00.000Z" title="Created 2025-03-08 18:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/%E5%85%A5%E9%97%A8%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E2%80%94%E2%80%94consul/" title="入门服务注册中心————consul">入门服务注册中心————consul</a><time datetime="2025-03-08T09:00:00.000Z" title="Created 2025-03-08 17:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2.ETCD%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" title="安装部署">安装部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/1.kubeadm%E9%AB%98%E5%8F%AF%E7%94%A8%E9%83%A8%E7%BD%B2/" title="高可用部署">高可用部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2025-3-5%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="第一篇文章">第一篇文章</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/03/">
+            <span class="card-archive-list-date">
+              March 2025
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">7</div></div><div class="webinfo-item"><div class="item-name">Total Word Count :</div><div class="item-count">26.6k</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-03-11T15:30:20.621Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By Xiaoxi</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script defer src="https://npm.elemecdn.com/tzy-blog/lib/js/other/sakura.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      const usePjax = true
+      true 
+        ? (usePjax ? pjax.loadUrl('/404.html') : window.location.href = '/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>

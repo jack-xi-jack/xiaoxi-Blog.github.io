@@ -1,0 +1,308 @@
+<!DOCTYPE html><html lang="CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>1.配置环境（RHEL） | xiaoxi-blog</title><meta name="author" content="Xiaoxi"><meta name="copyright" content="Xiaoxi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="生产环境推荐的kafka部署方式为operator方式部署，Strimzi是目前最主流的operator方案。集群数据量较小的话，可以采用NFS共享存储，数据量较大的话使用local pv存储。  部署operator ---  helm部署operator ---  operator部署方式为helm或yaml文件部署，此处以helm方式部署为例： 1234567891011121314151">
+<meta property="og:type" content="website">
+<meta property="og:title" content="1.配置环境（RHEL）">
+<meta property="og:url" content="https://www.xiaoxi.ink/k8s/14.%E9%83%A8%E7%BD%B2Kafka%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">
+<meta property="og:site_name" content="xiaoxi-blog">
+<meta property="og:description" content="生产环境推荐的kafka部署方式为operator方式部署，Strimzi是目前最主流的operator方案。集群数据量较小的话，可以采用NFS共享存储，数据量较大的话使用local pv存储。  部署operator ---  helm部署operator ---  operator部署方式为helm或yaml文件部署，此处以helm方式部署为例： 1234567891011121314151">
+<meta property="og:locale">
+<meta property="og:image" content="https://www.xiaoxi.ink/img/idea.jpg">
+<meta property="article:published_time" content="2025-03-11T10:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-11T10:00:00.000Z">
+<meta property="article:author" content="Xiaoxi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaoxi.ink/img/idea.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.xiaoxi.ink/k8s/14.%E9%83%A8%E7%BD%B2Kafka%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '1.配置环境（RHEL）',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="web_bg" style="background-image: url(/img/background.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoxi-blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">1.配置环境（RHEL）</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><blockquote>
+<p><font style="background-color:rgba(255, 255, 255, 0);">生产环境推荐的kafka部署方式为operator方式部署，Strimzi是目前最主流的operator方案。集群数据量较小的话，可以采用NFS共享存储，数据量较大的话使用local pv存储。</font></p>
+</blockquote>
+<h1 id="4cc34089"><font style="background-color:rgba(255, 255, 255, 0);">部署operator</font></h1>
+---
+
+<h2 id="b6a89aa3"><font style="background-color:rgba(255, 255, 255, 0);">helm部署operator</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">operator部署方式为helm或yaml文件部署，此处以helm方式部署为例：</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# helm repo add strimzi https://strimzi.io/charts/</span><br><span class="line">&quot;strimzi&quot; has been added to your repositories</span><br><span class="line">[root@tiaoban kafka]# helm pull strimzi/strimzi-kafka-operator --untar</span><br><span class="line">[root@tiaoban kafka]# cd strimzi-kafka-operator</span><br><span class="line">[root@tiaoban strimzi-kafka-operator]# vim values.yaml</span><br><span class="line">dashboards: # 加载grafna dashboard</span><br><span class="line">  enabled: true</span><br><span class="line">  namespace: monitoring</span><br><span class="line"># 安装</span><br><span class="line">[root@k8s-master traefik]# helm install strimzi -n kafka . -f values.yaml --create-namespace</span><br><span class="line">NAME: strimzi</span><br><span class="line">LAST DEPLOYED: Sun Oct 20 20:21:54 2024</span><br><span class="line">NAMESPACE: kafka</span><br><span class="line">STATUS: deployed</span><br><span class="line">REVISION: 1</span><br><span class="line">TEST SUITE: None</span><br><span class="line">NOTES:</span><br><span class="line">Thank you for installing strimzi-kafka-operator-0.43.0</span><br><span class="line"></span><br><span class="line">To create a Kafka cluster refer to the following documentation.</span><br><span class="line"></span><br><span class="line">https://strimzi.io/docs/operators/latest/deploying.html#deploying-cluster-operator-helm-chart-str</span><br><span class="line">[root@tiaoban strimzi-kafka-operator]# kubectl get pod -n kafka</span><br><span class="line">NAME                                        READY   STATUS    RESTARTS   AGE</span><br><span class="line">strimzi-cluster-operator-56fdbb99cb-gznkw   1/1     Running   0          17m</span><br></pre></td></tr></table></figure>
+
+<h2 id="ca142d42"><font style="background-color:rgba(255, 255, 255, 0);">获取示例文件</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">Strimzi官方仓库为我们提供了各种场景下的示例文件，资源清单下载地址：</font><a target="_blank" rel="noopener" href="https://github.com/strimzi/strimzi-kafka-operator/releases"><font style="background-color:rgba(255, 255, 255, 0);">https://github.com/strimzi/strimzi-kafka-operator/releases</font></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# ls</span><br><span class="line">strimzi-kafka-operator</span><br><span class="line">[root@tiaoban kafka]# wget https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.43.0/strimzi-0.43.0.tar.gz</span><br><span class="line">[root@tiaoban kafka]# tar -zxf strimzi-0.43.0.tar.gz</span><br><span class="line">[root@tiaoban kafka]# cd strimzi-0.43.0/examples/kafka</span><br><span class="line">[root@tiaoban kafka]# tree.</span><br><span class="line">├── kafka-ephemeral-single.yaml</span><br><span class="line">├── kafka-ephemeral.yaml</span><br><span class="line">├── kafka-jbod.yaml</span><br><span class="line">├── kafka-persistent-single.yaml</span><br><span class="line">├── kafka-persistent.yaml</span><br><span class="line">├── kafka-with-node-pools.yaml</span><br><span class="line">└── kraft</span><br><span class="line">    ├── kafka-ephemeral.yaml</span><br><span class="line">    ├── kafka-jbod.yaml</span><br><span class="line">    ├── kafka-single-node.yaml</span><br><span class="line">    ├── kafka-with-dual-role-nodes.yaml</span><br><span class="line">    ├── kafka.yaml</span><br><span class="line">    └── README.md</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">示例文件说明：</font></p>
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka-persistent.yaml:部署具有三个 ZooKeeper 和三个 Kafka 节点的持久集群。（推荐）</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka-jbod.yaml:部署具有三个 ZooKeeper 和三个 Kafka 节点（每个节点使用多个持久卷）的持久集群。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka-persistent-single.yaml:部署具有单个 ZooKeeper 节点和单个 Kafka 节点的持久集群。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka-ephemeral.yaml:部署具有三个 ZooKeeper 和三个 Kafka 节点的临时群集。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka-ephemeral-single.yaml:部署具有三个 ZooKeeper 节点和一个 Kafka 节点的临时群集。</font></li>
+</ul>
+<p><font style="background-color:rgba(255, 255, 255, 0);">kraft模式文件说明：</font></p>
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka-with-dual-role-nodes.yaml：部署一个 Kafka 集群，其中包含一个共享代理和控制器角色的节点池。（推荐）</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka.yaml：部署具有一个控制器节点池和一个代理节点池的持久性 Kafka 集群。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka-ephemeral.yaml：部署一个临时 Kafka 集群，其中包含一个控制器节点池和一个代理节点池。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka-single-node.yaml：部署具有单个节点的 Kafka 集群。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">kafka-jbod.yaml：在每个代理节点中部署具有多个卷的 Kafka 集群。</font></li>
+</ul>
+<h1 id="536ddfac"><font style="background-color:rgba(255, 255, 255, 0);">Zookeeper模式部署</font></h1>
+---
+
+<h2 id="2def4be1"><font style="background-color:rgba(255, 255, 255, 0);">创建pvc资源</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">此处以nfs存储为例，提前创建pvc资源，分别用于3个zookeeper和3个kafka持久化存储数据使用。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# cat kafka-pvc.yaml</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: data-my-cluster-zookeeper-0</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs-client</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 100Gi</span><br><span class="line">---</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: data-my-cluster-zookeeper-1</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs-client</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 100Gi</span><br><span class="line">---</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: data-my-cluster-zookeeper-2</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs-client</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 100Gi</span><br><span class="line">---</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: data-0-my-cluster-kafka-0</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs-client</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 100Gi</span><br><span class="line">---</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: data-0-my-cluster-kafka-1</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs-client</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 100Gi</span><br><span class="line">---</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: data-0-my-cluster-kafka-2</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs-client</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 100Gi</span><br></pre></td></tr></table></figure>
+
+<h2 id="12970d41"><font style="background-color:rgba(255, 255, 255, 0);">部署kafka和zookeeper</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">参考官方仓库的kafka-persistent.yaml示例文件，部署三个 ZooKeeper 和三个 Kafka 节点的持久集群。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# cat &gt; kafka.yaml &lt;&lt; EOF</span><br><span class="line">apiVersion: kafka.strimzi.io/v1beta2</span><br><span class="line">kind: Kafka</span><br><span class="line">metadata:</span><br><span class="line">  name: my-cluster</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  kafka:</span><br><span class="line">    version: 3.5.1</span><br><span class="line">    replicas: 3</span><br><span class="line">    listeners:</span><br><span class="line">      - name: plain</span><br><span class="line">        port: 9092</span><br><span class="line">        type: internal</span><br><span class="line">        tls: false</span><br><span class="line">      - name: tls</span><br><span class="line">        port: 9093</span><br><span class="line">        type: internal</span><br><span class="line">        tls: true</span><br><span class="line">    config:</span><br><span class="line">      offsets.topic.replication.factor: 3</span><br><span class="line">      transaction.state.log.replication.factor: 3</span><br><span class="line">      transaction.state.log.min.isr: 2</span><br><span class="line">      default.replication.factor: 3</span><br><span class="line">      min.insync.replicas: 2</span><br><span class="line">      inter.broker.protocol.version: &quot;3.5&quot;</span><br><span class="line">    storage:</span><br><span class="line">      type: jbod</span><br><span class="line">      volumes:</span><br><span class="line">      - id: 0</span><br><span class="line">        type: persistent-claim</span><br><span class="line">        size: 100Gi</span><br><span class="line">        deleteClaim: false</span><br><span class="line">  zookeeper:</span><br><span class="line">    replicas: 3</span><br><span class="line">    storage:</span><br><span class="line">      type: persistent-claim</span><br><span class="line">      size: 100Gi</span><br><span class="line">      deleteClaim: false</span><br><span class="line">  entityOperator:</span><br><span class="line">    topicOperator: &#123;&#125;</span><br><span class="line">    userOperator: &#123;&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<h2 id="046e223e"><font style="background-color:rgba(255, 255, 255, 0);">访问验证</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">查看资源信息，已成功创建相关pod和svc资源。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# kubectl get pod -n kafka</span><br><span class="line">NAME                                          READY   STATUS    RESTARTS   AGE</span><br><span class="line">my-cluster-entity-operator-7c68d4b9d9-tg56j   3/3     Running   0          2m15s</span><br><span class="line">my-cluster-kafka-0                            1/1     Running   0          2m54s</span><br><span class="line">my-cluster-kafka-1                            1/1     Running   0          2m54s</span><br><span class="line">my-cluster-kafka-2                            1/1     Running   0          2m54s</span><br><span class="line">my-cluster-zookeeper-0                        1/1     Running   0          3m19s</span><br><span class="line">my-cluster-zookeeper-1                        1/1     Running   0          3m19s</span><br><span class="line">my-cluster-zookeeper-2                        1/1     Running   0          3m19s</span><br><span class="line">strimzi-cluster-operator-56fdbb99cb-gznkw     1/1     Running   0          97m</span><br><span class="line">[root@tiaoban kafka]# kubectl get svc -n kafka</span><br><span class="line">NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                                        AGE</span><br><span class="line">my-cluster-kafka-bootstrap    ClusterIP   10.99.246.133   &lt;none&gt;        9091/TCP,9092/TCP,9093/TCP                     3m3s</span><br><span class="line">my-cluster-kafka-brokers      ClusterIP   None            &lt;none&gt;        9090/TCP,9091/TCP,8443/TCP,9092/TCP,9093/TCP   3m3s</span><br><span class="line">my-cluster-zookeeper-client   ClusterIP   10.109.106.29   &lt;none&gt;        2181/TCP                                       3m28s</span><br><span class="line">my-cluster-zookeeper-nodes    ClusterIP   None            &lt;none&gt;        2181/TCP,2888/TCP,3888/TCP                     3m28s</span><br></pre></td></tr></table></figure>
+
+<h1 id="47303cc8"><font style="background-color:rgba(255, 255, 255, 0);">KRaft模式部署</font></h1>
+---
+
+<h2 id="xzvtA"><font style="background-color:rgba(255, 255, 255, 0);">创建pvc资源</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">此处以nfs存储为例，提前创建pvc资源，用于kafka持久化存储数据使用。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# cat &gt; kafka-pvc.yaml &lt;&lt; EOF</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: data-0-my-cluster-dual-role-0</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs-client</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 10Gi</span><br><span class="line">---</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: data-0-my-cluster-dual-role-1</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs-client</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 10Gi</span><br><span class="line">---</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: data-0-my-cluster-dual-role-2</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: nfs-client</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 10Gi</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<h2 id="c1485a3b"><font style="background-color:rgba(255, 255, 255, 0);">部署kafka</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">参考官方仓库的kafka-with-dual-role-nodes.yaml示例文件，部署一个控制代理节点和三个 Kafka 节点的持久集群。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# cat &gt; kafka.yaml &lt;&lt; EOF</span><br><span class="line">apiVersion: kafka.strimzi.io/v1beta2</span><br><span class="line">kind: KafkaNodePool</span><br><span class="line">metadata:</span><br><span class="line">  name: dual-role</span><br><span class="line">  namespace: kafka</span><br><span class="line">  labels:</span><br><span class="line">    strimzi.io/cluster: my-cluster</span><br><span class="line">spec:</span><br><span class="line">  replicas: 3</span><br><span class="line">  roles:</span><br><span class="line">    - controller</span><br><span class="line">    - broker</span><br><span class="line">  storage:</span><br><span class="line">    type: jbod</span><br><span class="line">    volumes:</span><br><span class="line">      - id: 0</span><br><span class="line">        type: persistent-claim</span><br><span class="line">        size: 10Gi</span><br><span class="line">        deleteClaim: false</span><br><span class="line">        kraftMetadata: shared</span><br><span class="line">---</span><br><span class="line">apiVersion: kafka.strimzi.io/v1beta2</span><br><span class="line">kind: Kafka</span><br><span class="line">metadata:</span><br><span class="line">  name: my-cluster</span><br><span class="line">  namespace: kafka</span><br><span class="line">  annotations:</span><br><span class="line">    strimzi.io/node-pools: enabled</span><br><span class="line">    strimzi.io/kraft: enabled</span><br><span class="line">spec:</span><br><span class="line">  kafka:</span><br><span class="line">    version: 3.8.0</span><br><span class="line">    metadataVersion: 3.8-IV0</span><br><span class="line">    listeners:</span><br><span class="line">      - name: plain</span><br><span class="line">        port: 9092</span><br><span class="line">        type: internal</span><br><span class="line">        tls: false</span><br><span class="line">      - name: tls</span><br><span class="line">        port: 9093</span><br><span class="line">        type: internal</span><br><span class="line">        tls: true</span><br><span class="line">    config:</span><br><span class="line">      offsets.topic.replication.factor: 3</span><br><span class="line">      transaction.state.log.replication.factor: 3</span><br><span class="line">      transaction.state.log.min.isr: 2</span><br><span class="line">      default.replication.factor: 3</span><br><span class="line">      min.insync.replicas: 2</span><br><span class="line">  entityOperator:</span><br><span class="line">    topicOperator: &#123;&#125;</span><br><span class="line">    userOperator: &#123;&#125;</span><br><span class="line">  kafkaExporter: &#123;&#125; # 启用exporter监控</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<h2 id="Y9NBE"><font style="background-color:rgba(255, 255, 255, 0);">访问验证</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">查看资源信息，已成功创建相关pod和svc资源。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# kubectl get pod -n kafka</span><br><span class="line">NAME                                          READY   STATUS    RESTARTS   AGE</span><br><span class="line">my-cluster-entity-operator-7c68d4b9d9-tg56j   3/3     Running   0          2m15s</span><br><span class="line">NAME                                          READY   STATUS    RESTARTS   AGE     IP            NODE        NOMINATED NODE   READINESS GATES</span><br><span class="line">my-cluster-dual-role-0                        1/1     Running   0          10m     10.244.3.65   k8s-test4   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">my-cluster-dual-role-1                        1/1     Running   0          10m     10.244.1.33   k8s-test2   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">my-cluster-dual-role-2                        1/1     Running   0          10m     10.244.2.46   k8s-test3   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">my-cluster-entity-operator-5dc6767689-jmnck   2/2     Running   0          9m26s   10.244.3.66   k8s-test4   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">strimzi-cluster-operator-7fb8ff4bd-fzfgw      1/1     Running   0          39m     10.244.3.64   k8s-test4   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">[root@tiaoban kafka]# kubectl get svc -n kafka</span><br><span class="line">NAME                         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                        AGE</span><br><span class="line">my-cluster-kafka-bootstrap   ClusterIP   10.107.111.213   &lt;none&gt;        9091/TCP,9092/TCP,9093/TCP                     21m</span><br><span class="line">my-cluster-kafka-brokers     ClusterIP   None             &lt;none&gt;        9090/TCP,9091/TCP,8443/TCP,9092/TCP,9093/TCP   21m</span><br></pre></td></tr></table></figure>
+
+<h1 id="41af4e22"><font style="background-color:rgba(255, 255, 255, 0);">部署kafka-ui</font></h1>
+---
+
+<h2 id="e8928169"><font style="background-color:rgba(255, 255, 255, 0);">创建资源</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建configmap和ingress资源，在configmap中指定kafka连接地址。以traefik为例，创建ingress资源便于通过域名方式访问。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# cat kafka-ui.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ConfigMap</span><br><span class="line">metadata:</span><br><span class="line">  name: kafka-ui-helm-values</span><br><span class="line">  namespace: kafka</span><br><span class="line">data:</span><br><span class="line">  KAFKA_CLUSTERS_0_NAME: &quot;kafka-cluster&quot;</span><br><span class="line">  KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: &quot;my-cluster-kafka-brokers.kafka.svc:9092&quot;</span><br><span class="line">  AUTH_TYPE: &quot;DISABLED&quot;</span><br><span class="line">  MANAGEMENT_HEALTH_LDAP_ENABLED: &quot;FALSE&quot; </span><br><span class="line">---</span><br><span class="line">apiVersion: traefik.io/v1alpha1</span><br><span class="line">kind: IngressRoute</span><br><span class="line">metadata:</span><br><span class="line">  name: kafka-ui</span><br><span class="line">  namespace: kafka</span><br><span class="line">spec:</span><br><span class="line">  entryPoints:</span><br><span class="line">  - web</span><br><span class="line">  routes:</span><br><span class="line">  - match: Host(`kafka-ui.local.com`) </span><br><span class="line">    kind: Rule</span><br><span class="line">    services:</span><br><span class="line">      - name: kafka-ui</span><br><span class="line">        port: 80</span><br><span class="line">[root@tiaoban kafka]# kubectl apply -f kafka-ui.yaml </span><br><span class="line">configmap/kafka-ui-helm-values created</span><br><span class="line">ingressroute.traefik.containo.us/kafka-ui created</span><br></pre></td></tr></table></figure>
+
+<h2 id="cs4WC"><font style="background-color:rgba(255, 255, 255, 0);">部署kafka-ui</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">helm方式部署kafka-ui并指定配置文件</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban kafka]# helm repo add kafka-ui https://provectus.github.io/kafka-ui-charts</span><br><span class="line">[root@tiaoban kafka]# helm install kafka-ui kafka-ui/kafka-ui -n kafka --set existingConfigMap=&quot;kafka-ui-helm-values&quot;</span><br><span class="line">NAME: kafka-ui</span><br><span class="line">LAST DEPLOYED: Mon Oct  9 09:56:45 2023</span><br><span class="line">NAMESPACE: kafka</span><br><span class="line">STATUS: deployed</span><br><span class="line">REVISION: 1</span><br><span class="line">TEST SUITE: None</span><br><span class="line">NOTES:</span><br><span class="line">1. Get the application URL by running these commands:</span><br><span class="line">  export POD_NAME=$(kubectl get pods --namespace kafka -l &quot;app.kubernetes.io/name=kafka-ui,app.kubernetes.io/instance=kafka-ui&quot; -o jsonpath=&quot;&#123;.items[0].metadata.name&#125;&quot;)</span><br><span class="line">  echo &quot;Visit http://127.0.0.1:8080 to use your application&quot;</span><br><span class="line">  kubectl --namespace kafka port-forward $POD_NAME 8080:8080</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">访问验证，添加hosts记录</font><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;192.168.10.100 kafka-ui.local.com&lt;/font&gt;</code><font style="background-color:rgba(255, 255, 255, 0);">，然后访问测试。</font></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737892946714-217657ff-6bcd-42d0-b644-2389efd26ca5.jpeg"></p>
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Xiaoxi</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/jack-xi-jack" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1643699428@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/Istio/" title="Istio">Istio</a><time datetime="2025-03-08T10:00:00.000Z" title="Created 2025-03-08 18:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/%E5%85%A5%E9%97%A8%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E2%80%94%E2%80%94consul/" title="入门服务注册中心————consul">入门服务注册中心————consul</a><time datetime="2025-03-08T09:00:00.000Z" title="Created 2025-03-08 17:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2.ETCD%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" title="安装部署">安装部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/1.kubeadm%E9%AB%98%E5%8F%AF%E7%94%A8%E9%83%A8%E7%BD%B2/" title="高可用部署">高可用部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2025-3-5%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="第一篇文章">第一篇文章</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/03/">
+            <span class="card-archive-list-date">
+              March 2025
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">7</div></div><div class="webinfo-item"><div class="item-name">Total Word Count :</div><div class="item-count">26.6k</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-03-11T15:30:20.621Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By Xiaoxi</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script defer src="https://npm.elemecdn.com/tzy-blog/lib/js/other/sakura.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      const usePjax = true
+      true 
+        ? (usePjax ? pjax.loadUrl('/404.html') : window.location.href = '/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
