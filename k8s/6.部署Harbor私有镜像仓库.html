@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang="CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>xiaoxi-blog | xiaoxi-blog</title><meta name="author" content="Xiaoxi"><meta name="copyright" content="Xiaoxi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="部署harbor ---  下载软件包 ---   安装docker 安装docker-compose 下载harbor离线安装包github仓库软件包下载地址  12[root@opt ~]# wget https:&#x2F;&#x2F;github.com&#x2F;goharbor&#x2F;harbor&#x2F;releases&#x2F;download&#x2F;v2.11.1&#x2F;harbor-offline-installer-v2.11.1.tgz">
+<meta property="og:type" content="website">
+<meta property="og:title" content="xiaoxi-blog">
+<meta property="og:url" content="https://www.xiaoxi.ink/k8s/6.%E9%83%A8%E7%BD%B2Harbor%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93.html">
+<meta property="og:site_name" content="xiaoxi-blog">
+<meta property="og:description" content="部署harbor ---  下载软件包 ---   安装docker 安装docker-compose 下载harbor离线安装包github仓库软件包下载地址  12[root@opt ~]# wget https:&#x2F;&#x2F;github.com&#x2F;goharbor&#x2F;harbor&#x2F;releases&#x2F;download&#x2F;v2.11.1&#x2F;harbor-offline-installer-v2.11.1.tgz">
+<meta property="og:locale">
+<meta property="og:image" content="https://www.xiaoxi.ink/img/idea.jpg">
+<meta property="article:published_time" content="2025-03-11T14:46:12.895Z">
+<meta property="article:modified_time" content="2025-03-11T14:38:39.352Z">
+<meta property="article:author" content="Xiaoxi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaoxi.ink/img/idea.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.xiaoxi.ink/k8s/6.%E9%83%A8%E7%BD%B2Harbor%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'xiaoxi-blog',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="web_bg" style="background-image: url(/img/background.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoxi-blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title"></h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><h1 id="fc12ee52"><font style="background-color:rgba(255, 255, 255, 0);">部署harbor</font></h1>
+---
+
+<h2 id="8ee50e07"><font style="background-color:rgba(255, 255, 255, 0);">下载软件包</font></h2>
+---
+
+<ol>
+<li><font style="background-color:rgba(255, 255, 255, 0);">安装docker</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">安装docker-compose</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">下载harbor离线安装包<br></font><a target="_blank" rel="noopener" href="https://github.com/goharbor/harbor/releases"><font style="background-color:rgba(255, 255, 255, 0);">github仓库软件包下载地址</font></a></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@opt ~]# wget https://github.com/goharbor/harbor/releases/download/v2.11.1/harbor-offline-installer-v2.11.1.tgz</span><br><span class="line">[root@opt ~]# tar -xvf harbor-offline-installer-v2.11.1.tgz </span><br></pre></td></tr></table></figure>
+
+<h2 id="faaccfba"><font style="background-color:rgba(255, 255, 255, 0);">http方式</font></h2>
+---
+
+<ol>
+<li><font style="background-color:rgba(255, 255, 255, 0);">复制配置文件并修改</font></li>
+</ol>
+<p><font style="background-color:rgba(255, 255, 255, 0);"></font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@harbor ~]# cp harbor.yml.tmpl harbor.yml</span><br><span class="line">[root@harbor ~]# vim harbor.yml</span><br><span class="line"># 设置域名</span><br><span class="line">hostname: harbor.local.com</span><br><span class="line"># 注释https相关配置</span><br><span class="line"># http related config</span><br><span class="line">http:</span><br><span class="line">  # port for http, default is 80. If https enabled, this port will redirect to https port</span><br><span class="line">  port: 80</span><br><span class="line"></span><br><span class="line"># https related config</span><br><span class="line">#https:</span><br><span class="line">  # https port for harbor, default is 443</span><br><span class="line">  #port: 443</span><br><span class="line">  # The path of cert and key files for nginx</span><br><span class="line">  #certificate: /your/certificate/path</span><br><span class="line">  #private_key: /your/private/key/path</span><br></pre></td></tr></table></figure>
+
+<h2 id="f1a7433c"><font style="background-color:rgba(255, 255, 255, 0);">https方式(建议)</font></h2>
+---
+
+<p><strong><font style="background-color:rgba(255, 255, 255, 0);">生成自签名证书</font></strong></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">这里我们使用</font><a target="_blank" rel="noopener" href="https://github.com/Fishdrowned/ssl"><font style="background-color:rgba(255, 255, 255, 0);">https://github.com/Fishdrowned/ssl</font></a><font style="background-color:rgba(255, 255, 255, 0);">提供的shell脚本生成ssl证书，</font><font style="background-color:rgba(255, 255, 255, 0);">证书有效期是 2 年，可以修改 ca.cnf 来修改这个年限。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"># 克隆项目</span><br><span class="line">[root@tiaoban opt]# git clone https://github.com/Fishdrowned/ssl.git</span><br><span class="line"># 一键生成证书</span><br><span class="line">[root@tiaoban opt]# cd ssl</span><br><span class="line">[root@tiaoban ssl]# ./gen.cert.sh harbor.local.com # 生成harbor.local.com域名的证书</span><br><span class="line">Removing dir out</span><br><span class="line">Creating output structure</span><br><span class="line">Done</span><br><span class="line">Generating a RSA private key</span><br><span class="line">...................................+++++</span><br><span class="line">....+++++</span><br><span class="line">writing new private key to &#x27;out/root.key.pem&#x27;</span><br><span class="line">-----</span><br><span class="line">Generating RSA private key, 2048 bit long modulus (2 primes)</span><br><span class="line">.............+++++</span><br><span class="line">....................................+++++</span><br><span class="line">e is 65537 (0x010001)</span><br><span class="line">Using configuration from ./ca.cnf</span><br><span class="line">Check that the request matches the signature</span><br><span class="line">Signature ok</span><br><span class="line">The Subject&#x27;s Distinguished Name is as follows</span><br><span class="line">countryName           :PRINTABLE:&#x27;CN&#x27;</span><br><span class="line">stateOrProvinceName   :ASN.1 12:&#x27;Guangdong&#x27;</span><br><span class="line">localityName          :ASN.1 12:&#x27;Guangzhou&#x27;</span><br><span class="line">organizationName      :ASN.1 12:&#x27;Fishdrowned&#x27;</span><br><span class="line">organizationalUnitName:ASN.1 12:&#x27;harbor.local.com&#x27;</span><br><span class="line">commonName            :ASN.1 12:&#x27;*.harbor.local.com</span><br><span class="line">Certificate is to be certified until Aug 12 10:49:02 2025 GMT (730 days)</span><br><span class="line"></span><br><span class="line">Write out database with 1 new entries</span><br><span class="line">Data Base Updated</span><br><span class="line"></span><br><span class="line">Certificates are located in:</span><br><span class="line">lrwxrwxrwx 1 root root 43 8月  13 18:49 /opt/ssl/out/harbor.local.com/harbor.local.com.bundle.crt -&gt; ./20230813-1849/harbor.local.com.bundle.crt</span><br><span class="line">lrwxrwxrwx 1 root root 36 8月  13 18:49 /opt/ssl/out/harbor.local.com/harbor.local.com.crt -&gt; ./20230813-1849/harbor.local.com.crt</span><br><span class="line">lrwxrwxrwx 1 root root 15 8月  13 18:49 /opt/ssl/out/harbor.local.com/harbor.local.com.key.pem -&gt; ../cert.key.pem</span><br><span class="line">lrwxrwxrwx 1 root root 11 8月  13 18:49 /opt/ssl/out/harbor.local.com/root.crt -&gt; ../root.crt</span><br><span class="line"></span><br><span class="line"># 查看证书文件</span><br><span class="line">[root@tiaoban ssl]# cd out/harbor.local.com/</span><br><span class="line">[root@tiaoban harbor.local.com]# ll</span><br><span class="line">总用量 0</span><br><span class="line">drwxr-xr-x 2 root root 101 8月  13 18:49 20230813-1849</span><br><span class="line">lrwxrwxrwx 1 root root  43 8月  13 18:49 harbor.local.com.bundle.crt -&gt; ./20230813-1849/harbor.local.com.bundle.crt</span><br><span class="line">lrwxrwxrwx 1 root root  36 8月  13 18:49 harbor.local.com.crt -&gt; ./20230813-1849/harbor.local.com.crt</span><br><span class="line">lrwxrwxrwx 1 root root  15 8月  13 18:49 harbor.local.com.key.pem -&gt; ../cert.key.pem</span><br><span class="line">lrwxrwxrwx 1 root root  11 8月  13 18:49 root.crt -&gt; ../root.crt</span><br><span class="line"></span><br><span class="line"># 拷贝证书至harbor目录</span><br><span class="line">[root@tiaoban harbor.local.com]# cp harbor.local.com.crt /opt/harbor/</span><br><span class="line">[root@tiaoban harbor.local.com]# cp harbor.local.com.key.pem /opt/harbor/</span><br></pre></td></tr></table></figure>
+
+<p><strong><font style="background-color:rgba(255, 255, 255, 0);">修改配置文件</font></strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@harbor ~]# cp harbor.yml.tmpl harbor.yml</span><br><span class="line">[root@harbor ~]# vim harbor.yml</span><br><span class="line"># 设置域名</span><br><span class="line">hostname: harbor.local.com</span><br><span class="line"># 注释http相关配置</span><br><span class="line"># http related config</span><br><span class="line"># http:</span><br><span class="line">  # port for http, default is 80. If https enabled, this port will redirect to https port</span><br><span class="line">  # port: 80</span><br><span class="line"></span><br><span class="line"># https related config</span><br><span class="line">https:</span><br><span class="line">  # https port for harbor, default is 443</span><br><span class="line">  port: 443</span><br><span class="line">  # The path of cert and key files for nginx</span><br><span class="line">  certificate: /opt/harbor/harbor.local.com.crt </span><br><span class="line">  private_key: /opt/harbor/harbor.local.com.key.pem</span><br><span class="line">data_volume: /data/harbor</span><br></pre></td></tr></table></figure>
+
+<h2 id="2ee20074"><font style="background-color:rgba(255, 255, 255, 0);">执行安装脚本</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">运行install.sh脚本</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@harbor  harbor]# ./install.sh </span><br><span class="line">[Step 5]: starting Harbor ...</span><br><span class="line">[+] Building 0.0s (0/0)                                                                                                                                            </span><br><span class="line">[+] Running 10/10</span><br><span class="line"> ✔ Network harbor_harbor        Created                                                                                                                       0.3s </span><br><span class="line"> ✔ Container harbor-log         Started                                                                                                                       1.8s </span><br><span class="line"> ✔ Container harbor-portal      Started                                                                                                                      12.8s </span><br><span class="line"> ✔ Container registry           Started                                                                                                                      13.1s </span><br><span class="line"> ✔ Container redis              Started                                                                                                                      13.2s </span><br><span class="line"> ✔ Container registryctl        Started                                                                                                                      11.4s </span><br><span class="line"> ✔ Container harbor-db          Started                                                                                                                      12.0s </span><br><span class="line"> ✔ Container harbor-core        Started                                                                                                                      14.3s </span><br><span class="line"> ✔ Container nginx              Started                                                                                                                      18.2s </span><br><span class="line"> ✔ Container harbor-jobservice  Started                                                                                                                      18.1s </span><br><span class="line">✔ ----Harbor has been installed and started successfully.----</span><br></pre></td></tr></table></figure>
+
+<h2 id="aeb9bb00"><font style="background-color:rgba(255, 255, 255, 0);">访问Harbor并登录</font></h2>
+---
+
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737809926767-7b8f9ce6-e59e-46ea-b7b0-2f4e7dc81375.jpeg"></p>
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">初始用户名admin</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">初始密码Harbor12345</font></li>
+</ul>
+<h2 id="a4c4a61c"><font style="background-color:rgba(255, 255, 255, 0);">创建systemd服务管理脚本</font></h2>
+---
+
+<ul>
+<li><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;vim /lib/systemd/system/harbor.service&lt;/font&gt;</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Harbor</span><br><span class="line">After=docker.service systemd-networkd.service systemd-resolved.service</span><br><span class="line">Requires=docker.service</span><br><span class="line">Documentation=http://github.com/vmware/harbor</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">Restart=on-failure</span><br><span class="line">RestartSec=5</span><br><span class="line">ExecStart=/usr/local/bin/docker-compose -f /opt/harbor/docker-compose.yml up</span><br><span class="line">ExecReload=/usr/local/bin/docker-compose -f /opt/harbor/docker-compose.yml restart</span><br><span class="line">ExecStop=/usr/local/bin/docker-compose -f /opt/harbor/docker-compose.yml down</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;systemctl enable harbor --now&lt;/font&gt;</code></p>
+<h1 id="a3c8ccc3"><font style="background-color:rgba(255, 255, 255, 0);">授权访问</font></h1>
+---
+
+<h2 id="6cf19b66"><font style="background-color:rgba(255, 255, 255, 0);">docker授权访问</font></h2>
+---
+
+<ol>
+<li><font style="background-color:rgba(255, 255, 255, 0);">docker配置文件私有仓库设置<br></font><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;[root@master ~]# vim /etc/docker/daemon.json&lt;/font&gt;</code></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot;: [</span><br><span class="line">        &quot;https://mirror.ccs.tencentyun.com&quot;,</span><br><span class="line">        &quot;https://o2j0mc5x.mirror.aliyuncs.com&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;insecure-registries&quot;: [</span><br><span class="line">        &quot;https://harbor.local.com&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><font style="background-color:rgba(255, 255, 255, 0);">重启docker<br></font><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;systemctl daemon-reload&lt;/font&gt;</code><font style="background-color:rgba(255, 255, 255, 0);"><br></font><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;systemctl restart docker&lt;/font&gt;</code></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">master节点登陆测试</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban ~]# docker login harbor.local.com -u admin</span><br><span class="line">Password: </span><br><span class="line">WARNING! Your password will be stored unencrypted in /root/.docker/config.json.</span><br><span class="line">Configure a credential helper to remove this warning. See</span><br><span class="line">https://docs.docker.com/engine/reference/commandline/login/#credentials-store</span><br><span class="line"></span><br><span class="line">Login Succeeded</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><font style="background-color:rgba(255, 255, 255, 0);">推送镜像测试</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban ~]# docker pull busybox</span><br><span class="line">Using default tag: latest</span><br><span class="line">latest: Pulling from library/busybox</span><br><span class="line">5cc84ad355aa: Pull complete </span><br><span class="line">Digest: sha256:5acba83a746c7608ed544dc1533b87c737a0b0fb730301639a0179f9344b1678</span><br><span class="line">Status: Downloaded newer image for busybox:latest</span><br><span class="line">docker.io/library/busybox:latest</span><br><span class="line">[root@tiaoban ~]# docker tag busybox:latest harbor.local.com/library/busybox:latest</span><br><span class="line">[root@tiaoban ~]# docker push harbor.local.com/library/busybox:latest</span><br><span class="line">The push refers to repository [harbor.local.com/library/busybox]</span><br><span class="line">01fd6df81c8e: Pushed </span><br><span class="line">latest: digest: sha256:62ffc2ed7554e4c6d360bce40bbcf196573dd27c4ce080641a2c59867e732dee size: 527</span><br></pre></td></tr></table></figure>
+
+<h2 id="8731a2b7"><font style="background-color:rgba(255, 255, 255, 0);">Containerd授权访问</font></h2>
+---
+
+<ol>
+<li><font style="background-color:rgba(255, 255, 255, 0);">修改配置文件</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@master1 ~]# mkdir -p /etc/containerd/certs.d/harbor.local.com</span><br><span class="line">[root@master1 ~]# cat &gt; /etc/containerd/certs.d/harbor.local.com/hosts.toml &lt;&lt; EOF</span><br><span class="line">server = &quot;https://harbor.local.com&quot;</span><br><span class="line">[host.&quot;https://harbor.local.com&quot;]</span><br><span class="line">  capabilities = [&quot;pull&quot;, &quot;resolve&quot;, &quot;push&quot;]</span><br><span class="line">  skip_verify = true</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><font style="background-color:rgba(255, 255, 255, 0);">重启containerd</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@master1 ~]# systemctl restart containerd </span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><font style="background-color:rgba(255, 255, 255, 0);">登录测试</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@master1 ~]# nerdctl login -u admin -p Harbor12345 --insecure-registry harbor.local.com</span><br><span class="line">WARN[0000] WARNING! Using --password via the CLI is insecure. Use --password-stdin. </span><br><span class="line">WARN[0000] skipping verifying HTTPS certs for &quot;harbor.local.com&quot; </span><br><span class="line">WARNING: Your password will be stored unencrypted in /root/.docker/config.json.</span><br><span class="line">Configure a credential helper to remove this warning. See</span><br><span class="line">https://docs.docker.com/engine/reference/commandline/login/#credentials-store</span><br><span class="line"></span><br><span class="line">Login Succeeded</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><font style="background-color:rgba(255, 255, 255, 0);">推送镜像测试</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@master1 ~]# nerdctl pull busybox</span><br><span class="line">[root@master1 ~]# nerdctl tag busybox:latest harbor.local.com/library/busybox:latest</span><br><span class="line">[root@master1 ~]# nerdctl push --insecure-registry harbor.local.com/library/busybox:latest</span><br></pre></td></tr></table></figure>
+
+<h2 id="bd90f437"><font style="background-color:rgba(255, 255, 255, 0);">kubernets授权访问</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">由于harbor采用了用户名密码认证，所以在镜像下载时，如果仓库类型为私有，则需要配置sercet才可以拉取镜像。</font></p>
+<ol>
+<li><font style="background-color:rgba(255, 255, 255, 0);">创建认证secret</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create secret docker-registry registry-secret --namespace=default --docker-server=harbor.local.com --docker-username=admin --docker-password=Harbor12345</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><font style="background-color:rgba(255, 255, 255, 0);">查看secret</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># kubectl get secrets </span><br><span class="line">NAME              TYPE                             DATA   AGE</span><br><span class="line">registry-secret   kubernetes.io/dockerconfigjson   1      9s</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><font style="background-color:rgba(255, 255, 255, 0);">使用相应的私有registry中镜像的Pod资源的定义，即可通过imagePullSecrets字段使用此Secret对象</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod </span><br><span class="line">metadata:</span><br><span class="line">  name: secret-imagepull-demo</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  imagePullSecrets:</span><br><span class="line">  - name: registry-secret</span><br><span class="line">  containers:</span><br><span class="line">  - image: 192.168.10.14/k8s/nginx:v1</span><br><span class="line">    name: myapp</span><br></pre></td></tr></table></figure>
+
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Xiaoxi</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/jack-xi-jack" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1643699428@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/Istio/" title="Istio">Istio</a><time datetime="2025-03-08T10:00:00.000Z" title="Created 2025-03-08 18:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/%E5%85%A5%E9%97%A8%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E2%80%94%E2%80%94consul/" title="入门服务注册中心————consul">入门服务注册中心————consul</a><time datetime="2025-03-08T09:00:00.000Z" title="Created 2025-03-08 17:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/1.kubeadm%E9%AB%98%E5%8F%AF%E7%94%A8%E9%83%A8%E7%BD%B2/" title="高可用部署">高可用部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2025-3-5%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="第一篇文章">第一篇文章</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2.ETCD%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" title="安装部署">安装部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/03/">
+            <span class="card-archive-list-date">
+              March 2025
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">7</div></div><div class="webinfo-item"><div class="item-name">Total Word Count :</div><div class="item-count">26.6k</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-03-11T14:50:52.676Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By Xiaoxi</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script defer src="https://npm.elemecdn.com/tzy-blog/lib/js/other/sakura.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      const usePjax = true
+      true 
+        ? (usePjax ? pjax.loadUrl('/404.html') : window.location.href = '/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>

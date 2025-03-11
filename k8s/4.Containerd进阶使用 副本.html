@@ -1,0 +1,489 @@
+<!DOCTYPE html><html lang="CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>xiaoxi-blog | xiaoxi-blog</title><meta name="author" content="Xiaoxi"><meta name="copyright" content="Xiaoxi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ctr命令使用 ---  命名空间 查看命名空间  Containerd 中也支持命名空间的概念，比如查看命名空间： 12345[root@work3 ~]# ctr ns lsNAME    LABELS default        k8s.io         moby   创建命名空间 如果不指定，ctr 默认使用的是 default 空间。同样也可以使用 ns create 命令创建一个">
+<meta property="og:type" content="website">
+<meta property="og:title" content="xiaoxi-blog">
+<meta property="og:url" content="https://www.xiaoxi.ink/k8s/4.Containerd%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8%20%E5%89%AF%E6%9C%AC.html">
+<meta property="og:site_name" content="xiaoxi-blog">
+<meta property="og:description" content="ctr命令使用 ---  命名空间 查看命名空间  Containerd 中也支持命名空间的概念，比如查看命名空间： 12345[root@work3 ~]# ctr ns lsNAME    LABELS default        k8s.io         moby   创建命名空间 如果不指定，ctr 默认使用的是 default 空间。同样也可以使用 ns create 命令创建一个">
+<meta property="og:locale">
+<meta property="og:image" content="https://www.xiaoxi.ink/img/idea.jpg">
+<meta property="article:published_time" content="2025-03-11T14:40:20.368Z">
+<meta property="article:modified_time" content="2025-03-11T14:40:20.368Z">
+<meta property="article:author" content="Xiaoxi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaoxi.ink/img/idea.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.xiaoxi.ink/k8s/4.Containerd%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8%20%E5%89%AF%E6%9C%AC.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'xiaoxi-blog',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="web_bg" style="background-image: url(/img/background.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoxi-blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title"></h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><h1 id="Wu324"><font style="background-color:rgba(255, 255, 255, 0);">ctr命令使用</font></h1>
+---
+
+<h2 id="jWZEX"><font style="background-color:rgba(255, 255, 255, 0);">命名空间</font></h2>
+<font style="background-color:rgba(255, 255, 255, 0);">查看命名空间</font>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">Containerd 中也支持命名空间的概念，比如查看命名空间：</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr ns ls</span><br><span class="line">NAME    LABELS </span><br><span class="line">default        </span><br><span class="line">k8s.io         </span><br><span class="line">moby </span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建命名空间</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">如果不指定，ctr 默认使用的是 default 空间。同样也可以使用 ns create 命令创建一个命名空间：</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr ns create test</span><br><span class="line">[root@work3 ~]# ctr ns ls</span><br><span class="line">NAME    LABELS </span><br><span class="line">default        </span><br><span class="line">k8s.io         </span><br><span class="line">moby           </span><br><span class="line">test</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">删除命名空间</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">使用 remove 或者 rm 可以删除 namespace：</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr ns rm test</span><br><span class="line">test</span><br><span class="line">[root@work3 ~]# ctr ns ls</span><br><span class="line">NAME    LABELS </span><br><span class="line">default        </span><br><span class="line">k8s.io         </span><br><span class="line">moby </span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">指定命名空间</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">有了命名空间后就可以在操作资源的时候指定 namespace，比如查看 test 命名空间的镜像，可以在操作命令后面加上 -n test 选项：</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ ctr -n test image ls</span><br><span class="line">REF TYPE DIGEST SIZE PLATFORMS LABELS</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">我们知道 Docker 其实也是默认调用的 containerd，事实上 Docker 使用的 containerd 下面的命名空间默认是 moby，而不是 default，所以假如我们有用 docker 启动容器，那么我们也可以通过 ctr -n moby 来定位下面的容器：</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ ctr -n moby container ls</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">同样 Kubernetes 下使用的 containerd 默认命名空间是 k8s.io，所以我们可以使用 ctr -n k8s.io 来查看 Kubernetes 下面创建的容器。</font></p>
+<h2 id="vPuiL"><font style="background-color:rgba(255, 255, 255, 0);">镜像操作</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">通过ctr image命令完成，也可以简化为ctr i命令操作</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">拉取镜像</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">拉取镜像可以使用 ctr image pull 来完成，比如拉取 Docker Hub 官方镜像 nginx:alpine，需要注意的是镜像地址需要加上 docker.io Host 地址</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);"></font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr image pull docker.io/library/nginx:alpine</span><br><span class="line">docker.io/library/nginx:alpine:                                                   resolved       |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">index-sha256:647c5c83418c19eef0cddc647b9899326e3081576390c4c7baa4fce545123b6c:    exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">manifest-sha256:ccf066d2cfec0cfe57a63cf26f4b7cabbea80e11ab5b7f1cc11a1b5efd65ea0b: exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">layer-sha256:9398808236ffac29e60c04ec906d8d409af7fa19dc57d8c65ad167e9c4967006:    exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">layer-sha256:e6a5b569446606ea05a88fc5be4097b4982fc4bc8aeae0818385fe13b8b6066e:    done           |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">config-sha256:414132ff3b076936528928c823b4f3d1e1178b2692ae04defc8f8fdfd0a83a03:   exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">layer-sha256:7b8bdebbb770eb9a7ceaecd729a82d21052fcdb9915873a67d5834960944fcf2:    exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">layer-sha256:a2a4fe64baa08a5a04c1acd107b0026f81a72c7e35cdb3647e164f3b87871d09:    exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">layer-sha256:0777b518fc6e4d42454db10fd2da40eb3f2e9086aa2529066ce6b314c2ec08cb:    exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">layer-sha256:63f4060a8ef34058494aefc8ef63522d21056a40f00255d0c5d92ab51212e4c2:    exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">layer-sha256:48703ecfcf806f280f159af73a1688374148f4860c52d016646a40a1a84853ec:    exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">layer-sha256:9cbe387ec693ef1d8ece08c1ab2d510ac31d0745c157fbf948cacac343b47c34:    exists         |++++++++++++++++++++++++++++++++++++++| </span><br><span class="line">elapsed: 164.1s                                                                   total:  11.0 M (68.6 KiB/s)                                      </span><br><span class="line">unpacking linux/amd64 sha256:647c5c83418c19eef0cddc647b9899326e3081576390c4c7baa4fce545123b6c...</span><br><span class="line">done: 1.656214028s</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">列出本地镜像</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">列出镜像列表</span></span><br><span class="line">[root@work3 ~]# ctr image ls</span><br><span class="line">REF                                         TYPE                                                      DIGEST                                                                  SIZE      PLATFORMS                                                                                                                          LABELS </span><br><span class="line">docker.io/library/nginx:alpine              application/vnd.docker.distribution.manifest.list.v2+json sha256:647c5c83418c19eef0cddc647b9899326e3081576390c4c7baa4fce545123b6c 16.2 MiB  linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x                                           -      </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只查看镜像名称标签</span></span><br><span class="line">[root@work3 ~]# ctr image ls -q</span><br><span class="line">docker.io/flannel/flannel-cni-plugin:v1.2.0</span><br><span class="line">docker.io/flannel/flannel:v0.22.1</span><br><span class="line">docker.io/library/busybox:latest</span><br><span class="line">docker.io/library/nginx:alpine</span><br><span class="line">ghcr.io/kube-vip/kube-vip:v0.6.0</span><br><span class="line">harbor.local.com/library/busybox:latest</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">重新打标签</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr image tag docker.io/library/nginx:alpine harbor.local.com/library/nginx:alpine</span><br><span class="line">harbor.local.com/library/nginx:alpine</span><br><span class="line">[root@work3 ~]# ctr image ls -q</span><br><span class="line">docker.io/library/nginx:alpine</span><br><span class="line">harbor.local.com/library/nginx:alpine</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">删除镜像</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr image rm harbor.local.com/library/nginx:alpine</span><br><span class="line">harbor.local.com/library/nginx:alpine</span><br><span class="line">[root@work3 ~]# ctr image ls -q</span><br><span class="line">docker.io/library/nginx:alpine</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">将镜像导出为压缩包</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr image export nginx.tar docker.io/library/nginx:alpine</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">从压缩包导入镜像</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@work2 ~]# ctr image import nginx.tar </span><br></pre></td></tr></table></figure>
+
+<h2 id="SmLyN"><font style="background-color:rgba(255, 255, 255, 0);">容器操作</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">通过ctr container命令完成，也可以简化为ctr c命令操作</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">这里要解释一个概念 containers 和 task ，在docker里面 container 概念被弱化 ，将containers 和 task 整在一起 形成了docker中的 container。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">ctr中 containers 是镜像实例化的一个虚拟环境，提供一个磁盘，模拟空间，就好比你电脑处于关机状态一样。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">ctr中 tasks 是将容器运行起来，电脑开机了 ，初始化进程等 ，task就是的这么个形式。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建容器</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr container create docker.io/library/nginx:alpine nginx</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">列出容器</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr container ls</span><br><span class="line">CONTAINER    IMAGE                             RUNTIME                  </span><br><span class="line">nginx        docker.io/library/nginx:alpine    io.containerd.runc.v2    </span><br><span class="line">[root@work3 ~]# ctr container ls -q</span><br><span class="line">nginx</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">查看容器详情</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr container info nginx</span><br><span class="line">&#123;</span><br><span class="line">    &quot;ID&quot;: &quot;nginx&quot;,</span><br><span class="line">    &quot;Labels&quot;: &#123;</span><br><span class="line">        &quot;io.containerd.image.config.stop-signal&quot;: &quot;SIGQUIT&quot;,</span><br><span class="line">        &quot;maintainer&quot;: &quot;NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;Image&quot;: &quot;docker.io/library/nginx:alpine&quot;,</span><br><span class="line">    &quot;Runtime&quot;: &#123;</span><br><span class="line">        &quot;Name&quot;: &quot;io.containerd.runc.v2&quot;,</span><br><span class="line">        &quot;Options&quot;: &#123;</span><br><span class="line">            &quot;type_url&quot;: &quot;containerd.runc.v1.Options&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">删除容器</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr container rm nginx</span><br><span class="line">[root@work3 ~]# ctr container ls</span><br><span class="line">CONTAINER    IMAGE    RUNTIME </span><br></pre></td></tr></table></figure>
+
+<h2 id="P5mQT"><font style="background-color:rgba(255, 255, 255, 0);">任务操作</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">上面我们通过 container create 命令创建的容器，并没有处于运行状态，只是一个静态的容器。一个 container 对象只是包含了运行一个容器所需的资源及相关配置数据，表示 namespaces、rootfs 和容器的配置都已经初始化成功了，只是用户进程还没有启动。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">一个容器真正运行起来是由 Task 任务实现的，Task 可以为容器设置网卡，还可以配置工具来对容器进行监控等。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">启动容器</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr container create docker.io/library/nginx:alpine nginx</span><br><span class="line">[root@work3 ~]# ctr task start -d nginx</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">查看正在运行的容器</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr task ls</span><br><span class="line">TASK     PID      STATUS    </span><br><span class="line">nginx    60394    RUNNING</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">获取容器信息</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">使用 task metrics 命令用来获取容器的内存、CPU 和 PID 的限额与使用量。</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr task metrics nginx</span><br><span class="line">ID       TIMESTAMP                                  </span><br><span class="line">nginx    2023-08-13 04:42:31.648754469 +0000 UTC    </span><br><span class="line"></span><br><span class="line">METRIC                   VALUE                                                                                                                                                                                                                                                                                          </span><br><span class="line">memory.usage_in_bytes    5226496                                                                                                                                                                                                                                                                                        </span><br><span class="line">memory.limit_in_bytes    9223372036854771712                                                                                                                                                                                                                                                                            </span><br><span class="line">memory.stat.cache        155648                                                                                                                                                                                                                                                                                         </span><br><span class="line">cpuacct.usage            74124077                                                                                                                                                                                                                                                                                       </span><br><span class="line">cpuacct.usage_percpu     [32560123 27605021 7821698 6137235 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]    </span><br><span class="line">pids.current             5                                                                                                                                                                                                                                                                                              </span><br><span class="line">pids.limit               0</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">获取容器PID</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">使用 task ps 命令查看容器中所有进程在宿主机中的 PID：</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr task ps nginx</span><br><span class="line">PID      INFO</span><br><span class="line">62925    -</span><br><span class="line">62954    -</span><br><span class="line">62955    -</span><br><span class="line">62956    -</span><br><span class="line">62957    -</span><br><span class="line">[root@work3 ~]# ctr task ls</span><br><span class="line">TASK     PID      STATUS    </span><br><span class="line">nginx    62925    RUNNING</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">其中第一个 PID 3984 就是我们容器中的 1 号进程。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">进入容器进行操作</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr task exec --exec-id 0 -t nginx sh</span><br><span class="line">/ # ls</span><br><span class="line">bin                   docker-entrypoint.sh  lib </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">指定用户进入</span></span><br><span class="line">[root@work3 ~]# ctr task exec --exec-id 0 --user 65534 -t nginx sh</span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">whoami</span></span></span><br><span class="line">nobody</span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">exit</span></span></span><br><span class="line">[root@work3 ~]# ctr task exec --exec-id 0 --user 0 -t nginx sh</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">whoami</span></span></span><br><span class="line">root</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">不过这里需要注意必须要指定 –exec-id 参数，这个 id 可以随便写，只要唯一就行。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">暂停容器</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr task pause nginx</span><br><span class="line">[root@work3 ~]# ctr task ls</span><br><span class="line">TASK     PID      STATUS    </span><br><span class="line">nginx    60394    PAUSED</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">暂停后容器状态变成了 PAUSED</span></span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">恢复容器</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr task resume nginx</span><br><span class="line">[root@work3 ~]# ctr task ls</span><br><span class="line">TASK     PID      STATUS    </span><br><span class="line">nginx    60394    RUNNING</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">停止容器</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">不过需要注意 ctr 没有 stop 容器的功能，只能暂停或者杀死容器。杀死容器可以使用 task kill 命令:</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr task kill nginx</span><br><span class="line">[root@work3 ~]# ctr task ls</span><br><span class="line">TASK     PID      STATUS    </span><br><span class="line">nginx    60394    STOPPED</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">删除容器</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">杀掉容器后可以看到容器的状态变成了 STOPPED。同样也可以通过 task rm 命令删除 Task：</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@work3 ~]# ctr task rm nginx</span><br><span class="line">[root@work3 ~]# ctr task ls</span><br><span class="line">TASK    PID    STATUS</span><br></pre></td></tr></table></figure>
+
+<h1 id="oZwBQ"><font style="background-color:rgba(255, 255, 255, 0);">安装配置crictl</font></h1>
+---
+
+<h2 id="AJFk1"><font style="background-color:rgba(255, 255, 255, 0);">安装crictl</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">crictl 是 CRI 兼容的容器运行时命令行接口，和containerd无关，由Kubernetes提供，可以使用它来检查和调试 k8s 节点上的容器运行时和应用程序。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">下载地址：<a target="_blank" rel="noopener" href="https://github.com/kubernetes-sigs/cri-tools/releases%EF%BC%8C%E4%BE%8B%E5%A6%82%E5%AE%89%E8%A3%851.30.6%E7%89%88%E6%9C%AC%E7%9A%84k8s%EF%BC%8C%E6%AD%A4%E5%A4%84%E5%AE%89%E8%A3%85%E7%9A%84crictl%E5%B0%B1%E6%98%AF1.30.1%E3%80%82">https://github.com/kubernetes-sigs/cri-tools/releases，例如安装1.30.6版本的k8s，此处安装的crictl就是1.30.1。</a></font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Loading...# 下载</span><br><span class="line">[root@k8s-master ~]# wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.30.1/crictl-v1.30.1-linux-amd64.tar.gz</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">解压</span></span><br><span class="line">[root@k8s-master ~]# tar -zxvf crictl-v1.30.1-linux-amd64.tar.gz -C /usr/local/bin</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置</span></span><br><span class="line">[root@k8s-master ~]# cat &gt; /etc/crictl.yaml &lt;&lt; EOF</span><br><span class="line">runtime-endpoint: &quot;unix:///run/containerd/containerd.sock&quot;</span><br><span class="line">image-endpoint: &quot;unix:///run/containerd/containerd.sock&quot;</span><br><span class="line">timeout: 0</span><br><span class="line">debug: false</span><br><span class="line">pull-image-on-create: false</span><br><span class="line">disable-pull-on-run: false</span><br><span class="line">EOF</span><br><span class="line">[root@k8s-master ~]# crictl version</span><br><span class="line">Version:  0.1.0</span><br><span class="line">RuntimeName:  containerd</span><br><span class="line">RuntimeVersion:  1.6.4</span><br><span class="line">RuntimeApiVersion:  v1</span><br></pre></td></tr></table></figure>
+
+<h2 id="VUGBB"><font style="background-color:rgba(255, 255, 255, 0);">打印清单</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">打印 Pod 清单</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打印所有 Pod 的清单</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl pods</span></span><br><span class="line">POD ID              CREATED              STATE               NAME                         NAMESPACE           ATTEMPT</span><br><span class="line">926f1b5a1d33a       About a minute ago   Ready               sh-84d7dcf559-4r2gq          default             0</span><br><span class="line">4dccb216c4adb       About a minute ago   Ready               nginx-65899c769f-wv2gp       default             0</span><br><span class="line">a86316e96fa89       17 hours ago         Ready               kube-proxy-gblk4             kube-system         0</span><br><span class="line">919630b8f81f1       17 hours ago         Ready               nvidia-device-plugin-zgbbv   kube-system         0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据名称打印 Pod 清单：</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl pods --name nginx-65899c769f-wv2gp</span></span><br><span class="line">POD ID              CREATED             STATE               NAME                     NAMESPACE           ATTEMPT</span><br><span class="line">4dccb216c4adb       2 minutes ago       Ready               nginx-65899c769f-wv2gp   default             0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据标签打印 Pod 清单</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl pods --label run=nginx</span></span><br><span class="line">POD ID              CREATED             STATE               NAME                     NAMESPACE           ATTEMPT</span><br><span class="line">4dccb216c4adb       2 minutes ago       Ready               nginx-65899c769f-wv2gp   default             0</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">打印镜像清单</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打印所有镜像清单</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl images</span></span><br><span class="line">IMAGE                                     TAG                 IMAGE ID            SIZE</span><br><span class="line">busybox                                   latest              8c811b4aec35f       1.15MB</span><br><span class="line">k8s-gcrio.azureedge.net/hyperkube-amd64   v1.10.3             e179bbfe5d238       665MB</span><br><span class="line">k8s-gcrio.azureedge.net/pause-amd64       3.1                 da86e6ba6ca19       742kB</span><br><span class="line">nginx                                     latest              cd5239a0906a6       109MB</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据仓库打印镜像清单</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl images nginx</span></span><br><span class="line">IMAGE               TAG                 IMAGE ID            SIZE</span><br><span class="line">nginx               latest              cd5239a0906a6       109MB</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只打印镜像 ID</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl images -q</span></span><br><span class="line">sha256:8c811b4aec35f259572d0f79207bc0678df4c736eeec50bc9fec37ed936a472a</span><br><span class="line">sha256:e179bbfe5d238de6069f3b03fccbecc3fb4f2019af741bfff1233c4d7b2970c5</span><br><span class="line">sha256:da86e6ba6ca197bf6bc5e9d900febd906b133eaa4750e6bed647b0fbe50ed43e</span><br><span class="line">sha256:cd5239a0906a6ccf0562354852fae04bc5b52d72a2aff9a871ddb6bd57553569</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">打印容器清单</font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打印所有容器清单</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl ps -a</span></span><br><span class="line">CONTAINER ID        IMAGE                                                                                                             CREATED             STATE               NAME                       ATTEMPT</span><br><span class="line">1f73f2d81bf98       busybox@sha256:141c253bc4c3fd0a201d32dc1f493bcf3fff003b6df416dea4f41046e0f37d47                                   7 minutes ago       Running             sh                         1</span><br><span class="line">9c5951df22c78       busybox@sha256:141c253bc4c3fd0a201d32dc1f493bcf3fff003b6df416dea4f41046e0f37d47                                   8 minutes ago       Exited              sh                         0</span><br><span class="line">87d3992f84f74       nginx@sha256:d0a8828cccb73397acb0073bf34f4d7d8aa315263f1e7806bf8c55d8ac139d5f                                     8 minutes ago       Running             nginx                      0</span><br><span class="line">1941fb4da154f       k8s-gcrio.azureedge.net/hyperkube-amd64@sha256:00d814b1f7763f4ab5be80c58e98140dfc69df107f253d7fdd714b30a714260a   18 hours ago        Running             kube-proxy                 0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打印正在运行的容器清单</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl ps</span></span><br><span class="line">CONTAINER ID        IMAGE                                                                                                             CREATED             STATE               NAME                       ATTEMPT</span><br><span class="line">1f73f2d81bf98       busybox@sha256:141c253bc4c3fd0a201d32dc1f493bcf3fff003b6df416dea4f41046e0f37d47                                   6 minutes ago       Running             sh                         1</span><br><span class="line">87d3992f84f74       nginx@sha256:d0a8828cccb73397acb0073bf34f4d7d8aa315263f1e7806bf8c55d8ac139d5f                                     7 minutes ago       Running             nginx                      0</span><br><span class="line">1941fb4da154f       k8s-gcrio.azureedge.net/hyperkube-amd64@sha256:00d814b1f7763f4ab5be80c58e98140dfc69df107f253d7fdd714b30a714260a   17 hours ago        Running             kube-proxy                 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="UOaNL"><font style="background-color:rgba(255, 255, 255, 0);">容器执行命令</font></h2>
+---
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl <span class="built_in">exec</span> -i -t 1f73f2d81bf98 <span class="built_in">ls</span></span></span><br><span class="line">bin   dev   etc   home  proc  root  sys   tmp   usr   var</span><br></pre></td></tr></table></figure>
+
+<h2 id="DC2UT"><font style="background-color:rgba(255, 255, 255, 0);">获取容器日志</font></h2>
+---
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取容器的所有日志</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl logs 87d3992f84f74</span></span><br><span class="line">10.240.0.96 - - [06/Jun/2018:02:45:49 +0000] &quot;GET / HTTP/1.1&quot; 200 612 &quot;-&quot; &quot;curl/7.47.0&quot; &quot;-&quot;</span><br><span class="line">10.240.0.96 - - [06/Jun/2018:02:45:50 +0000] &quot;GET / HTTP/1.1&quot; 200 612 &quot;-&quot; &quot;curl/7.47.0&quot; &quot;-&quot;</span><br><span class="line">10.240.0.96 - - [06/Jun/2018:02:45:51 +0000] &quot;GET / HTTP/1.1&quot; 200 612 &quot;-&quot; &quot;curl/7.47.0&quot; &quot;-&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取最近的 N 行日志</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">crictl logs --<span class="built_in">tail</span>=1 87d3992f84f74</span></span><br><span class="line">10.240.0.96 - - [06/Jun/2018:02:45:51 +0000] &quot;GET / HTTP/1.1&quot; 200 612 &quot;-&quot; &quot;curl/7.47.0&quot; &quot;-&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="zgG3P"><font style="background-color:rgba(255, 255, 255, 0);">运行 Pod 沙盒</font></h2>
+<font style="background-color:rgba(255, 255, 255, 0);">用 crictl 运行 Pod 沙盒对容器运行时排错很有帮助。 在运行的 Kubernetes 集群中，沙盒会随机地被 kubelet 停止和删除。</font>
+
+<ol>
+<li><font style="background-color:rgba(255, 255, 255, 0);">编写下面的 JSON 文件：</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;metadata&quot;: &#123;</span><br><span class="line">        &quot;name&quot;: &quot;nginx-sandbox&quot;,</span><br><span class="line">        &quot;namespace&quot;: &quot;default&quot;,</span><br><span class="line">        &quot;attempt&quot;: 1,</span><br><span class="line">        &quot;uid&quot;: &quot;hdishd83djaidwnduwk28bcsb&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;logDirectory&quot;: &quot;/tmp&quot;,</span><br><span class="line">    &quot;linux&quot;: &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><font style="background-color:rgba(255, 255, 255, 0);">使用 crictl runp 命令应用 JSON 文件并运行沙盒。</font></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ crictl runp pod-config.json</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">返回了沙盒的 ID。</font></p>
+<h2 id="rQW1l"><font style="background-color:rgba(255, 255, 255, 0);">创建容器</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">用 crictl 创建容器对容器运行时排错很有帮助。 在运行的 Kubernetes 集群中，沙盒会随机的被 kubelet 停止和删除。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">拉取 busybox 镜像</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ crictl pull busybox</span><br><span class="line">Image is up to date for busybox@sha256:141c253bc4c3fd0a201d32dc1f493bcf3fff003b6df416dea4f41046e0f37d47</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建 Pod 配置</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;metadata&quot;: &#123;</span><br><span class="line">        &quot;name&quot;: &quot;nginx-sandbox&quot;,</span><br><span class="line">        &quot;namespace&quot;: &quot;default&quot;,</span><br><span class="line">        &quot;attempt&quot;: 1,</span><br><span class="line">        &quot;uid&quot;: &quot;hdishd83djaidwnduwk28bcsb&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;log_directory&quot;: &quot;/tmp&quot;,</span><br><span class="line">    &quot;linux&quot;: &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建容器配置</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;metadata&quot;: &#123;</span><br><span class="line">      &quot;name&quot;: &quot;busybox&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;image&quot;:&#123;</span><br><span class="line">      &quot;image&quot;: &quot;busybox&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;command&quot;: [</span><br><span class="line">      &quot;top&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;log_path&quot;:&quot;busybox.log&quot;,</span><br><span class="line">  &quot;linux&quot;: &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建容器，传递先前创建的 Pod 的 ID、容器配置文件和 Pod 配置文件。返回容器的 ID。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ crictl create f84dd361f8dc51518ed291fbadd6db537b0496536c1d2d6c05ff943ce8c9a54f container-config.json pod-config.json</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">查询所有容器并确认新创建的容器状态为 Created。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID        IMAGE               CREATED             STATE               NAME                ATTEMPT</span><br><span class="line">3e025dd50a72d       busybox             32 seconds ago      Created             busybox             0</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="TS3x9"><font style="background-color:rgba(255, 255, 255, 0);">启动容器</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">要启动容器，要将容器 ID 传给 crictl start：</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ crictl start 3e025dd50a72d956c4f14881fbb5b1080c9275674e95fb67f965f6478a957d60</span><br><span class="line">3e025dd50a72d956c4f14881fbb5b1080c9275674e95fb67f965f6478a957d60</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">确认容器的状态为 Running。</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ crictl ps</span><br><span class="line">CONTAINER ID        IMAGE               CREATED              STATE               NAME                ATTEMPT</span><br><span class="line">3e025dd50a72d       busybox             About a minute ago   Running             busybox             0</span><br></pre></td></tr></table></figure>
+
+<h1 id="jllch"><font style="background-color:rgba(255, 255, 255, 0);">安装与使用nerdctl</font></h1>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">containerd虽然可直接提供给终端用户直接使用，也提供了命令行工具(ctr)，但并不是很友好，所以nerdctl应运而生，它也是containerd的命令行工具，支持docker cli关于容器生命周期管理的所有命令，并且支持docker compose (nerdctl compose up)</font></p>
+<h2 id="Ehxpa"><font style="background-color:rgba(255, 255, 255, 0);">安装nerdctl</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">下载地址：</font><a target="_blank" rel="noopener" href="https://github.com/containerd/nerdctl/releases"><font style="background-color:rgba(255, 255, 255, 0);">https://github.com/containerd/nerdctl/releases</font></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 下载</span><br><span class="line">[root@k8s-master ~]# wget https://github.com/containerd/nerdctl/releases/download/v2.0.0-rc.3/nerdctl-2.0.0-rc.3-linux-amd64.tar.gz</span><br><span class="line"># 解压</span><br><span class="line">[root@k8s-master ~]# tar -zxvf nerdctl-2.0.0-rc.3-linux-amd64.tar.gz</span><br><span class="line">nerdctl</span><br><span class="line">containerd-rootless-setuptool.sh</span><br><span class="line">containerd-rootless.sh</span><br><span class="line"># 复制文件</span><br><span class="line">[root@k8s-master ~]# mv nerdctl /usr/bin/</span><br><span class="line"># 配置 nerdctl 参数自动补齐</span><br><span class="line">[root@k8s-master ~]# echo &#x27;source &lt;(nerdctl completion bash)&#x27; &gt;&gt; /etc/profile</span><br><span class="line">[root@k8s-master ~]# source /etc/profile</span><br><span class="line"># 验证</span><br><span class="line">[root@k8s-master ~]# nerdctl -v</span><br><span class="line">nerdctl version 2.0.0-rc.2</span><br></pre></td></tr></table></figure>
+
+<h2 id="BXi4y"><font style="background-color:rgba(255, 255, 255, 0);">命名空间</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">这个和K8s的名字空间不是一回事，其中default就是containerd的默认名字空间，</font><a target="_blank" rel="noopener" href="http://k8s.io/"><font style="background-color:rgba(255, 255, 255, 0);">http://k8s.io</font></a><font style="background-color:rgba(255, 255, 255, 0);">是K8s的名字空间</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 查看命名空间</span><br><span class="line">[root@k8s-master ~]# nerdctl ns ls</span><br><span class="line">NAME         CONTAINERS    IMAGES    VOLUMES    LABELS</span><br><span class="line">default      0             2         0              </span><br><span class="line">docker.io    0             1         0              </span><br><span class="line">k8s.io       18            51        0              </span><br><span class="line">moby         0             0         0</span><br><span class="line"># 创建命名空间</span><br><span class="line">[root@k8s-master ~]# nerdctl ns create test</span><br><span class="line"># 删除命名空间</span><br><span class="line">[root@k8s-master ~]# nerdctl ns remove test</span><br><span class="line">test</span><br><span class="line"># 查看名称空间详情</span><br><span class="line">[root@k8s-master ~]# nerdctl ns inspect k8s.io</span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;Name&quot;: &quot;k8s.io&quot;,</span><br><span class="line">        &quot;Labels&quot;: null</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h2 id="sU4R0"><font style="background-color:rgba(255, 255, 255, 0);">镜像</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 查看镜像</span><br><span class="line">[root@k8s-master ~]# nerdctl -n k8s.io images</span><br><span class="line">REPOSITORY                                                         TAG         IMAGE ID        CREATED         PLATFORM       SIZE         BLOB SIZE</span><br><span class="line">registry.aliyuncs.com/google_containers/coredns                    v1.8.6      5b6ec0d6de9b    5 days ago      linux/amd64    44.7 MiB     13.0 MiB</span><br><span class="line">registry.aliyuncs.com/google_containers/etcd                       3.5.6-0     dd75ec974b0a    5 days ago      linux/amd64    289.0 MiB    97.8 MiB</span><br><span class="line"># 拉取镜像</span><br><span class="line">[root@k8s-master ~]# nerdctl -n test pull nginx:alpine</span><br><span class="line"># 构建镜像</span><br><span class="line">[root@k8s-master ~]# cat Dockerfile </span><br><span class="line">FROM     debian</span><br><span class="line">RUN apt-get install -y --force-yes locales</span><br><span class="line">RUN echo &quot;LC_ALL=\&quot;zh_CN.UTF-8\&quot;&quot; &gt;&gt; /etc/default/locale</span><br><span class="line">RUN locale-gen &quot;zh_CN.UTF-8&quot;</span><br><span class="line">[root@k8s-master ~]# nerdctl -n test build -t abc.com/debian .</span><br><span class="line"># 上传镜像</span><br><span class="line">[root@k8s-master ~]# nerdctl -n test push abc.com/debian</span><br><span class="line"># 导出镜像</span><br><span class="line">[root@k8s-master ~]# nerdctl -n test save -o debian.tar abc.com/debian</span><br><span class="line"># 导入镜像</span><br><span class="line">[root@k8s-master ~]# nerdctl -n test load -i debian.tar</span><br></pre></td></tr></table></figure>
+
+<h2 id="tX7Xc"><font style="background-color:rgba(255, 255, 255, 0);">容器</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 查看容器</span><br><span class="line">[root@k8s-master ~]# nerdctl -n k8s.io ps </span><br><span class="line">CONTAINER ID    IMAGE                                                                      COMMAND                   CREATED         STATUS    PORTS    NAMES</span><br><span class="line">05be77648e0c    registry.aliyuncs.com/google_containers/kube-proxy:v1.25.0                 &quot;/usr/local/bin/kube…&quot;    13 hours ago    Up                 k8s://kube-system/kube-proxy-qd2dg/kube-proxy</span><br><span class="line">240c8fdfb7dd    registry.aliyuncs.com/google_containers/pause:3.6                          &quot;/pause&quot;                  13 hours ago    Up                 k8s://kube-system/kube-apiserver-k8s-master</span><br><span class="line">24728a2d2f1b    docker.io/flannel/flannel:v0.21.5                                          &quot;/opt/bin/flanneld -…&quot;    17 hours ago    Up                 k8s://kube-flannel/kube-flannel-ds-45rxr/kube-flannel</span><br><span class="line"># 启动容器</span><br><span class="line">[root@k8s-master ~]# nerdctl -n test run -d -p 80:80 --name web nginx:alpine</span><br><span class="line"># 进入容器</span><br><span class="line">[root@k8s-master ~]# nerdctl -n test exec -it web sh</span><br><span class="line">/ # </span><br><span class="line"># 停止容器</span><br><span class="line">[root@k8s-master ~]# nerdctl -n test stop web</span><br><span class="line">web</span><br><span class="line"># 删除容器</span><br><span class="line">[root@k8s-master ~]# nerdctl -n test rm web</span><br><span class="line">web</span><br></pre></td></tr></table></figure>
+
+<h2 id="JfIJj"><font style="background-color:rgba(255, 255, 255, 0);">其他操作</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"># 查看网络信息</span><br><span class="line">[root@k8s-master ~]# nerdctl network ls</span><br><span class="line">NETWORK ID      NAME      FILE</span><br><span class="line">                cbr0      /etc/cni/net.d/10-flannel.conflist</span><br><span class="line">17f29b073143    bridge    /etc/cni/net.d/nerdctl-bridge.conflist</span><br><span class="line">                host      </span><br><span class="line">                none</span><br><span class="line"># 查看系统信息</span><br><span class="line">[root@k8s-master ~]# nerdctl system info</span><br><span class="line">Client:</span><br><span class="line"> Namespace:     default</span><br><span class="line"> Debug Mode:    false</span><br><span class="line"></span><br><span class="line">Server:</span><br><span class="line"> Server Version: 1.6.4</span><br><span class="line"> Storage Driver: overlayfs</span><br><span class="line"> Logging Driver: json-file</span><br><span class="line"> Cgroup Driver: cgroupfs</span><br><span class="line"> Cgroup Version: 1</span><br><span class="line"> Plugins:</span><br><span class="line">  Log: fluentd journald json-file syslog</span><br><span class="line">  Storage: native overlayfs</span><br><span class="line"> Security Options:</span><br><span class="line">  seccomp</span><br><span class="line">   Profile: default</span><br><span class="line"> Kernel Version: 4.18.0-425.13.1.el8_7.x86_64</span><br><span class="line"> Operating System: Rocky Linux 8.7 (Green Obsidian)</span><br><span class="line"> OSType: linux</span><br><span class="line"> Architecture: x86_64</span><br><span class="line"> CPUs: 2</span><br><span class="line"> Total Memory: 3.618GiB</span><br><span class="line"> Name: k8s-master</span><br><span class="line"> ID: d2b76909-9552-4be5-a12a-00b955f756f2</span><br><span class="line"># 清理数据，它不是和Docker那样只是把标签为&quot;none&quot;的镜像清理掉，而是把所有没有&quot;正在使用&quot;的镜像清理了</span><br><span class="line">[root@k8s-master ~]# nerdctl system prune -h</span><br></pre></td></tr></table></figure>
+
+<h1 id="we2x0"><font style="background-color:rgba(255, 255, 255, 0);">nerdctl替代docker-compose</font></h1>
+---
+
+<h2 id="zEQJn"><font style="background-color:rgba(255, 255, 255, 0);">安装bridge插件</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban ~]# mkdir -p /opt/cni/bin</span><br><span class="line">[root@tiaoban ~]# cd /opt/cni/bin</span><br><span class="line">[root@tiaoban ~]# wget https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz</span><br><span class="line">[root@tiaoban ~]# tar -zxvf cni-plugins-linux-amd64-v1.4.1.tgz</span><br></pre></td></tr></table></figure>
+
+<h2 id="r8sMZ"><font style="background-color:rgba(255, 255, 255, 0);">管理compose</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">以Harbor为例演示，启动容器</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban harbor]# nerdctl compose up -d</span><br><span class="line">INFO[0000] Creating network harbor_harbor               </span><br><span class="line">INFO[0000] Creating network harbor_default </span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">查看启动的容器</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban harbor]# nerdctl ps</span><br><span class="line">CONTAINER ID    IMAGE                                            COMMAND                   CREATED           STATUS    PORTS                                          NAMES</span><br><span class="line">276a4f6a92e5    docker.io/goharbor/harbor-jobservice:v2.10.1     &quot;/harbor/entrypoint.…&quot;    32 seconds ago    Up                                                       harbor-jobservice</span><br><span class="line">7c3699c62fc7    docker.io/goharbor/redis-photon:v2.10.1          &quot;redis-server /etc/r…&quot;    35 seconds ago    Up                                                       redis</span><br><span class="line">810fbb8229c1    docker.io/goharbor/harbor-core:v2.10.1           &quot;/harbor/entrypoint.…&quot;    35 seconds ago    Up                                                       harbor-core</span><br><span class="line">9a6237f63aeb    docker.io/goharbor/nginx-photon:v2.10.1          &quot;nginx -g daemon off;&quot;    33 seconds ago    Up        0.0.0.0:80-&gt;8080/tcp, 0.0.0.0:443-&gt;8443/tcp    nginx</span><br><span class="line">a0198a493795    docker.io/goharbor/harbor-db:v2.10.1             &quot;/docker-entrypoint.…&quot;    36 seconds ago    Up                                                       harbor-db</span><br><span class="line">b4c2c4a1f934    docker.io/goharbor/harbor-log:v2.10.1            &quot;/bin/sh -c /usr/loc…&quot;    37 seconds ago    Up        127.0.0.1:1514-&gt;10514/tcp                      harbor-log</span><br><span class="line">d9ec21d50e55    docker.io/goharbor/harbor-portal:v2.10.1         &quot;nginx -g daemon off;&quot;    34 seconds ago    Up                                                       harbor-portal</span><br><span class="line">f1e6c92a6000    docker.io/goharbor/harbor-registryctl:v2.10.1    &quot;/home/harbor/start.…&quot;    33 seconds ago    Up                                                       registryctl</span><br><span class="line">f2f383e2a191    docker.io/goharbor/registry-photon:v2.10.1       &quot;/home/harbor/entryp…&quot;    36 seconds ago    Up                                                       registry</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">查看日志</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban harbor]# nerdctl compose logs</span><br><span class="line">db          |time=&quot;2024-04-26T20:39:54+08:00&quot; level=fatal msg=&quot;no log viewer type registered for logging driver \&quot;syslog\&quot;&quot;</span><br><span class="line">portal      |time=&quot;2024-04-26T20:39:54+08:00&quot; level=fatal msg=&quot;no log viewer type registered for logging driver \&quot;syslog\&quot;&quot;</span><br><span class="line">redis       |time=&quot;2024-04-26T20:39:54+08:00&quot; level=fatal msg=&quot;no log viewer type registered for logging driver \&quot;syslog\&quot;&quot;</span><br><span class="line">registry    |time=&quot;2024-04-26T20:39:54+08:00&quot; level=fatal msg=&quot;no log viewer type registered for logging driver \&quot;syslog\&quot;&quot;</span><br><span class="line">nginx       |time=&quot;2024-04-26T20:39:54+08:00&quot; level=fatal msg=&quot;no log viewer type registered for logging driver \&quot;syslog\&quot;&quot;</span><br><span class="line">core        |time=&quot;2024-04-26T20:39:54+08:00&quot; level=fatal msg=&quot;no log viewer type registered for logging driver \&quot;syslog\&quot;&quot;</span><br><span class="line">jobservice  |time=&quot;2024-04-26T20:39:54+08:00&quot; level=fatal msg=&quot;no log viewer type registered for logging driver \&quot;syslog\&quot;&quot;</span><br><span class="line">registryctl |time=&quot;2024-04-26T20:39:54+08:00&quot; level=fatal msg=&quot;no log viewer type registered for logging driver \&quot;syslog\&quot;&quot;</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">停止容器</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@tiaoban harbor]# nerdctl compose down</span><br></pre></td></tr></table></figure>
+
+<h1 id="5339e56b"><font style="background-color:rgba(255, 255, 255, 0);">nerdctl+buildkitd构建镜像</font></h1>
+---
+
+<h2 id="4abe89d9"><font style="background-color:rgba(255, 255, 255, 0);">buildkit介绍</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">buildkit 从Docker公司的开源的镜像构建工具包，支持OCI标准的镜像构建</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">buildkitd组成部分：</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">buildkitd（服务端），目前支持runc和containerd作为镜像构建环境，默认是runc，可以更换containerd。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">buildctl（客户端），负责解析Dockerfile文件、并向服务端buildkitd发出构建请求。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">构建镜像并推送至Harbor为例，整个服务调用过程如下：</font></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737802396681-1f579c7b-2837-4924-8113-97dbba5607e3.jpeg"></p>
+<h2 id="c992adf1"><font style="background-color:rgba(255, 255, 255, 0);">安装buildkit</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">软件包下载地址：</font><a target="_blank" rel="noopener" href="https://github.com/moby/buildkit/releases"><font style="background-color:rgba(255, 255, 255, 0);">https://github.com/moby/buildkit/releases</font></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# wget https://github.com/moby/buildkit/releases/download/v0.13.2/buildkit-v0.13.2.linux-amd64.tar.gz</span><br><span class="line">[root@master ~]# tar -zxvf buildkit-v0.13.2.linux-amd64.tar.gz </span><br><span class="line">bin/</span><br><span class="line">bin/buildctl</span><br><span class="line">bin/buildkit-cni-bridge</span><br><span class="line">bin/buildkit-cni-firewall</span><br><span class="line">bin/buildkit-cni-host-local</span><br><span class="line">bin/buildkit-cni-loopback</span><br><span class="line">bin/buildkit-qemu-aarch64</span><br><span class="line">bin/buildkit-qemu-arm</span><br><span class="line">bin/buildkit-qemu-i386</span><br><span class="line">bin/buildkit-qemu-mips64</span><br><span class="line">bin/buildkit-qemu-mips64el</span><br><span class="line">bin/buildkit-qemu-ppc64le</span><br><span class="line">bin/buildkit-qemu-riscv64</span><br><span class="line">bin/buildkit-qemu-s390x</span><br><span class="line">bin/buildkit-runc</span><br><span class="line">bin/buildkitd</span><br><span class="line">[root@master ~]# cd bin/</span><br><span class="line">[root@master bin]# cp * /usr/local/bin/</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建service脚本</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@master bin]# cat /etc/systemd/system/buildkitd.service</span><br><span class="line">[Unit]</span><br><span class="line">Description=BuildKit</span><br><span class="line">Documentation=https://github.com/moby/buildkit</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/local/bin/buildkitd --oci-worker=false --containerd-worker=true</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">新增buildkitd配置文件，添加镜像仓库使用http访问</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@master bin]# vim /etc/buildkit/buildkitd.toml</span><br><span class="line">[registry.&quot;harbor.local.com&quot;]</span><br><span class="line">  http = false</span><br><span class="line">  insecure = true</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">启动buildkitd</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@master bin]# systemctl daemon-reload</span><br><span class="line">[root@master bin]# systemctl start buildkitd</span><br><span class="line">[root@master bin]# systemctl enable buildkitd</span><br></pre></td></tr></table></figure>
+
+<h2 id="5b4ab044"><font style="background-color:rgba(255, 255, 255, 0);">构建镜像并测试</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# cat Dockerfile </span><br><span class="line">FROM busybox</span><br><span class="line">CMD [&quot;echo&quot;,&quot;hello&quot;,&quot;container&quot;]</span><br><span class="line">[root@master ~]# nerdctl build -t busybox:v1 .</span><br><span class="line">[root@master ~]# nerdctl images</span><br><span class="line">REPOSITORY    TAG    IMAGE ID        CREATED               PLATFORM       SIZE       BLOB SIZE</span><br><span class="line">busybox       v1     fb6a2dfc7899    About a minute ago    linux/amd64    4.1 MiB    2.1 MiB</span><br><span class="line">[root@master ~]# nerdctl run busybox:v1</span><br><span class="line">hello container</span><br></pre></td></tr></table></figure>
+
+<h2 id="6d4c46c7"><font style="background-color:rgba(255, 255, 255, 0);">推送至Harbor仓库</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# nerdctl tag busybox:v1 harbor.local.com/app/busybox:v1</span><br><span class="line">[root@master ~]# nerdctl push harbor.local.com/app/busybox:v1</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">此时查看Harbor仓库发现已经推送成功</font></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737802523651-b6549a67-9710-41ff-9ee6-4903e44ffd04.jpeg"></p>
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Xiaoxi</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/jack-xi-jack" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1643699428@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/Istio/" title="Istio">Istio</a><time datetime="2025-03-08T10:00:00.000Z" title="Created 2025-03-08 18:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/%E5%85%A5%E9%97%A8%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E2%80%94%E2%80%94consul/" title="入门服务注册中心————consul">入门服务注册中心————consul</a><time datetime="2025-03-08T09:00:00.000Z" title="Created 2025-03-08 17:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/1.kubeadm%E9%AB%98%E5%8F%AF%E7%94%A8%E9%83%A8%E7%BD%B2/" title="高可用部署">高可用部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2025-3-5%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="第一篇文章">第一篇文章</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2.ETCD%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" title="安装部署">安装部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/03/">
+            <span class="card-archive-list-date">
+              March 2025
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">7</div></div><div class="webinfo-item"><div class="item-name">Total Word Count :</div><div class="item-count">26.6k</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-03-11T14:50:52.676Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By Xiaoxi</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script defer src="https://npm.elemecdn.com/tzy-blog/lib/js/other/sakura.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      const usePjax = true
+      true 
+        ? (usePjax ? pjax.loadUrl('/404.html') : window.location.href = '/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html><html lang="CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>xiaoxi-blog | xiaoxi-blog</title><meta name="author" content="Xiaoxi"><meta name="copyright" content="Xiaoxi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="安装Kubernetes Operator ---  官网的文档 https:&#x2F;&#x2F;www.rabbitmq.com&#x2F;kubernetes&#x2F;operator&#x2F;operator-overview.html 1234567891011121314# Operator的yaml文件地址# wget https:&#x2F;&#x2F;github.com&#x2F;rabbitmq&#x2F;cluster-operator&#x2F;releases&#x2F;">
+<meta property="og:type" content="website">
+<meta property="og:title" content="xiaoxi-blog">
+<meta property="og:url" content="https://www.xiaoxi.ink/k8s/15.%E9%83%A8%E7%BD%B2Rabbit%20MQ%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">
+<meta property="og:site_name" content="xiaoxi-blog">
+<meta property="og:description" content="安装Kubernetes Operator ---  官网的文档 https:&#x2F;&#x2F;www.rabbitmq.com&#x2F;kubernetes&#x2F;operator&#x2F;operator-overview.html 1234567891011121314# Operator的yaml文件地址# wget https:&#x2F;&#x2F;github.com&#x2F;rabbitmq&#x2F;cluster-operator&#x2F;releases&#x2F;">
+<meta property="og:locale">
+<meta property="og:image" content="https://www.xiaoxi.ink/img/idea.jpg">
+<meta property="article:published_time" content="2025-03-11T14:47:11.080Z">
+<meta property="article:modified_time" content="2025-03-11T14:44:04.871Z">
+<meta property="article:author" content="Xiaoxi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaoxi.ink/img/idea.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.xiaoxi.ink/k8s/15.%E9%83%A8%E7%BD%B2Rabbit%20MQ%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'xiaoxi-blog',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="web_bg" style="background-image: url(/img/background.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoxi-blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title"></h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><h1 id="d9d372b6"><font style="background-color:rgba(255, 255, 255, 0);">安装Kubernetes Operator</font></h1>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">官网的文档 </font><a href="https://link.zhihu.com/?target=https://www.rabbitmq.com/kubernetes/operator/operator-overview.html"><font style="background-color:rgba(255, 255, 255, 0);">https://www.rabbitmq.com/kubernetes/operator/operator-overview.html</font></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># Operator的yaml文件地址</span><br><span class="line"># wget https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml</span><br><span class="line"></span><br><span class="line"># 安装</span><br><span class="line"># kubectl apply -f cluster-operator.yml </span><br><span class="line">namespace/rabbitmq-system created</span><br><span class="line">customresourcedefinition.apiextensions.k8s.io/rabbitmqclusters.rabbitmq.com created</span><br><span class="line">serviceaccount/rabbitmq-cluster-operator created</span><br><span class="line">role.rbac.authorization.k8s.io/rabbitmq-cluster-leader-election-role created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/rabbitmq-cluster-operator-role created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/rabbitmq-cluster-service-binding-role created</span><br><span class="line">rolebinding.rbac.authorization.k8s.io/rabbitmq-cluster-leader-election-rolebinding created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/rabbitmq-cluster-operator-rolebinding created</span><br><span class="line">deployment.apps/rabbitmq-cluster-operator created</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">安装完之后查看Operator是否启动正常, 默认pod在 rabbitmq-system命名空间下</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># kubectl get pod -n rabbitmq-system</span><br><span class="line">NAME                                        READY   STATUS    RESTARTS   AGE</span><br><span class="line">rabbitmq-cluster-operator-9d69fc79f-kp7ff   1/1     Running   0          8s</span><br></pre></td></tr></table></figure>
+
+<h1 id="bfa008dd"><font style="background-color:rgba(255, 255, 255, 0);">安装rabbitmq</font></h1>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">安装mq时，会使用storageClass创建pvc，所以k8s需要提前配置好storageClass。</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">自定义mq的yaml文件，配置项可以参考官网文档</font><a target="_blank" rel="noopener" href="https://www.rabbitmq.com/kubernetes/operator/using-operator#overview"><font style="background-color:rgba(255, 255, 255, 0);">https://www.rabbitmq.com/kubernetes/operator/using-operator#overview</font></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: rabbitmq.com/v1beta1</span><br><span class="line">kind: RabbitmqCluster</span><br><span class="line">metadata:</span><br><span class="line">  name: rabbitmq-cluster</span><br><span class="line">  namespace: rabbitmq</span><br><span class="line">  labels:</span><br><span class="line">    app: rabbitmq-cluster</span><br><span class="line">spec:</span><br><span class="line">  replicas: 3</span><br><span class="line">  image: harbor.local.com/rabbitmq/rabbitmq:3.13.7-management</span><br><span class="line">  persistence:</span><br><span class="line">    storageClassName: nfs</span><br><span class="line">    storage: 5Gi</span><br><span class="line">  resources:</span><br><span class="line">    limits:</span><br><span class="line">      cpu: 2</span><br><span class="line">      memory: 4Gi</span><br><span class="line">  rabbitmq:</span><br><span class="line">    additionalPlugins:</span><br><span class="line">      - rabbitmq_prometheus # 启用prometheus插件</span><br><span class="line">    additionalConfig: |</span><br><span class="line">      default_vhost = vhost      #配置Virtual Hosts</span><br><span class="line">      default_user = admin       #配置登录账号</span><br><span class="line">      default_pass = 123.com      #配置账号密码</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建并查看资源</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># kubectl get pod -n rabbitmq</span><br><span class="line">NAME                        READY   STATUS    RESTARTS   AGE</span><br><span class="line">rabbitmq-cluster-server-0   1/1     Running   0          58s</span><br><span class="line">rabbitmq-cluster-server-1   1/1     Running   0          58s</span><br><span class="line">rabbitmq-cluster-server-2   1/1     Running   0          58s</span><br><span class="line"># kubectl get svc -n rabbitmq                                   </span><br><span class="line">NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                        AGE</span><br><span class="line">rabbitmq-cluster         ClusterIP   10.109.153.87   &lt;none&gt;        5672/TCP,15672/TCP,15692/TCP   66s</span><br><span class="line">rabbitmq-cluster-nodes   ClusterIP   None            &lt;none&gt;        4369/TCP,25672/TCP             66s</span><br><span class="line"># kubectl get secrets -n rabbitmq                                                                            </span><br><span class="line">NAME                             TYPE     DATA   AGE</span><br><span class="line">rabbitmq-cluster-default-user    Opaque   8      2m41s</span><br><span class="line">rabbitmq-cluster-erlang-cookie   Opaque   1      2m41s</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">创建管理员用户与权限</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># kubectl exec -it -n rabbitmq rabbitmq-cluster-server-1 -- bash</span><br><span class="line">Defaulted container &quot;rabbitmq&quot; out of: rabbitmq, setup-container (init)</span><br><span class="line">rabbitmq@rabbitmq-cluster-server-1:/$ rabbitmqctl add_user admin 123.com</span><br><span class="line">Adding user &quot;admin&quot; ...</span><br><span class="line">Done. Don&#x27;t forget to grant the user permissions to some virtual hosts! See &#x27;rabbitmqctl help set_permissions&#x27; to learn more.</span><br><span class="line">rabbitmq@rabbitmq-cluster-server-1:/$ rabbitmqctl set_user_tags admin administrator</span><br><span class="line">Setting tags for user &quot;admin&quot; to [administrator] ...</span><br><span class="line">rabbitmq@rabbitmq-cluster-server-1:/$ rabbitmqctl set_permissions -p / admin &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;</span><br><span class="line">Setting permissions for user &quot;admin&quot; in vhost &quot;/&quot; ...</span><br></pre></td></tr></table></figure>
+
+<h1 id="167c2c3f"><font style="background-color:rgba(255, 255, 255, 0);">添加ingress和nodeport资源</font></h1>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">rabbitmq端口暴露</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: rabbitmq-nodeport</span><br><span class="line">  namespace: rabbitmq</span><br><span class="line">spec:</span><br><span class="line">  type: NodePort</span><br><span class="line">  selector:</span><br><span class="line">    app.kubernetes.io/name: rabbitmq-cluster</span><br><span class="line">  ports:</span><br><span class="line">  - name: amqp</span><br><span class="line">    port: 5672</span><br><span class="line">    protocol: TCP</span><br><span class="line">    targetPort: 5672</span><br><span class="line">    nodePort: 30005</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">web管理页面ingress</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: traefik.io/v1alpha1</span><br><span class="line">kind: IngressRoute</span><br><span class="line">metadata:</span><br><span class="line">  name: grafana</span><br><span class="line">  namespace: rabbitmq</span><br><span class="line">spec:</span><br><span class="line">  entryPoints:</span><br><span class="line">  - web</span><br><span class="line">  routes:</span><br><span class="line">  - match: Host(`rabbitmq.local.com`)</span><br><span class="line">    kind: Rule</span><br><span class="line">    services:</span><br><span class="line">      - name: rabbitmq-cluster</span><br><span class="line">        port: 15672</span><br></pre></td></tr></table></figure>
+
+<h1 id="046e223e"><font style="background-color:rgba(255, 255, 255, 0);">访问验证</font></h1>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">访问web管理页</font></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737893103207-00c9ba96-3959-4e47-b9d9-213e445bd44f.jpeg"></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">python测试脚本，发送消息</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">import pika</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def connect_rabbitmq(username, password, host, port=5672):</span><br><span class="line">    # 创建带有用户名和密码认证的 RabbitMQ 连接</span><br><span class="line">    credentials = pika.PlainCredentials(username, password)</span><br><span class="line">    connection = pika.BlockingConnection(</span><br><span class="line">        pika.ConnectionParameters(host=host, port=port, credentials=credentials)</span><br><span class="line">    )</span><br><span class="line">    return connection</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def send_message_to_queue(message, queue_name, username, password, host):</span><br><span class="line">    # 建立连接</span><br><span class="line">    connection = connect_rabbitmq(username, password, host)</span><br><span class="line">    channel = connection.channel()</span><br><span class="line"></span><br><span class="line">    # 声明队列（如果不存在则创建）</span><br><span class="line">    channel.queue_declare(queue=queue_name)</span><br><span class="line"></span><br><span class="line">    # 向指定队列发送消息</span><br><span class="line">    channel.basic_publish(</span><br><span class="line">        exchange=&#x27;&#x27;,</span><br><span class="line">        routing_key=queue_name,</span><br><span class="line">        body=message</span><br><span class="line">    )</span><br><span class="line">    print(f&quot;Sent message to queue &#123;queue_name&#125;&quot;)</span><br><span class="line"></span><br><span class="line">    # 关闭连接</span><br><span class="line">    connection.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    # 配置 RabbitMQ 用户认证信息</span><br><span class="line">    username = &quot;admin&quot;</span><br><span class="line">    password = &quot;123.com&quot;</span><br><span class="line">    host = &quot;192.168.10.10&quot;  # 可替换为 RabbitMQ 主机地址</span><br><span class="line"></span><br><span class="line">    # 要发送的消息内容和目标队列</span><br><span class="line">    message = &quot;Hello, RabbitMQ with Auth!&quot;</span><br><span class="line">    queue_name = &quot;single_queue&quot;</span><br><span class="line"></span><br><span class="line">    # 向单个队列发送消息</span><br><span class="line">    send_message_to_queue(message, queue_name, username, password, host)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">查看web页面成功收到消息。</font></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/jpeg/43141749/1737893125711-190bb554-f771-4a7a-89d7-b477e2266fea.jpeg"></p>
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Xiaoxi</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/jack-xi-jack" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1643699428@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/Istio/" title="Istio">Istio</a><time datetime="2025-03-08T10:00:00.000Z" title="Created 2025-03-08 18:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/%E5%85%A5%E9%97%A8%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E2%80%94%E2%80%94consul/" title="入门服务注册中心————consul">入门服务注册中心————consul</a><time datetime="2025-03-08T09:00:00.000Z" title="Created 2025-03-08 17:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/1.kubeadm%E9%AB%98%E5%8F%AF%E7%94%A8%E9%83%A8%E7%BD%B2/" title="高可用部署">高可用部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2025-3-5%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="第一篇文章">第一篇文章</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2.ETCD%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" title="安装部署">安装部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/03/">
+            <span class="card-archive-list-date">
+              March 2025
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">7</div></div><div class="webinfo-item"><div class="item-name">Total Word Count :</div><div class="item-count">26.6k</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-03-11T14:50:52.676Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By Xiaoxi</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script defer src="https://npm.elemecdn.com/tzy-blog/lib/js/other/sakura.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      const usePjax = true
+      true 
+        ? (usePjax ? pjax.loadUrl('/404.html') : window.location.href = '/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>

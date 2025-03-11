@@ -1,0 +1,319 @@
+<!DOCTYPE html><html lang="CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>xiaoxi-blog | xiaoxi-blog</title><meta name="author" content="Xiaoxi"><meta name="copyright" content="Xiaoxi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="kubeadm部署集群(1.20之前) ---   以下操作在master节点执行	  配置文件创建集群 + 获取默认的初始化参数文件  &lt;font style&#x3D;&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;# kubeadm config print init-defaults &gt; kubeadm-conf.yaml&amp;">
+<meta property="og:type" content="website">
+<meta property="og:title" content="xiaoxi-blog">
+<meta property="og:url" content="https://www.xiaoxi.ink/k8s/5.%E5%AE%89%E8%A3%85Kubernets%E9%9B%86%E7%BE%A4.html">
+<meta property="og:site_name" content="xiaoxi-blog">
+<meta property="og:description" content="kubeadm部署集群(1.20之前) ---   以下操作在master节点执行	  配置文件创建集群 + 获取默认的初始化参数文件  &lt;font style&#x3D;&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;# kubeadm config print init-defaults &gt; kubeadm-conf.yaml&amp;">
+<meta property="og:locale">
+<meta property="og:image" content="https://www.xiaoxi.ink/img/idea.jpg">
+<meta property="article:published_time" content="2025-03-11T14:40:41.389Z">
+<meta property="article:modified_time" content="2025-03-11T14:40:41.389Z">
+<meta property="article:author" content="Xiaoxi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaoxi.ink/img/idea.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.xiaoxi.ink/k8s/5.%E5%AE%89%E8%A3%85Kubernets%E9%9B%86%E7%BE%A4.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'xiaoxi-blog',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="web_bg" style="background-image: url(/img/background.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoxi-blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> movies</span></a></li><li><a class="site-page child" href="/k8s/"><i class="fa-fw fas fa-k8s 第一章 ： /first/"></i><span> k8s</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title"></h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><h1 id="eb5fd3ef"><font style="background-color:rgba(255, 255, 255, 0);">kubeadm部署集群(1.20之前)</font></h1>
+---
+
+<blockquote>
+<p><font style="background-color:rgba(255, 255, 255, 0);">以下操作在master节点执行	</font></p>
+</blockquote>
+<h2 id="lEFpw"><font style="background-color:rgba(255, 255, 255, 0);">配置文件创建集群</font></h2>
++ <font style="background-color:rgba(255, 255, 255, 0);">获取默认的初始化参数文件</font>
+
+<p><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;# kubeadm config print init-defaults &gt; kubeadm-conf.yaml&lt;/font&gt;</code></p>
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">配置kubeadm-conf.yaml初始化文件</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: kubeadm.k8s.io/v1beta2</span><br><span class="line">bootstrapTokens:</span><br><span class="line">- groups:</span><br><span class="line">  - system:bootstrappers:kubeadm:default-node-token</span><br><span class="line">  token: abcdef.0123456789abcdef</span><br><span class="line">  ttl: 24h0m0s</span><br><span class="line">  usages:</span><br><span class="line">  - signing</span><br><span class="line">  - authentication</span><br><span class="line">kind: InitConfiguration</span><br><span class="line">localAPIEndpoint:</span><br><span class="line">  advertiseAddress: 192.168.10.10 # master节点ip地址，如果 Master 有多个interface，建议明确指定，</span><br><span class="line">  bindPort: 6443</span><br><span class="line">nodeRegistration:</span><br><span class="line">  criSocket: /var/run/dockershim.sock</span><br><span class="line">  name: k8s-master # master节点主机名</span><br><span class="line">  taints:</span><br><span class="line">  - effect: NoSchedule</span><br><span class="line">    key: node-role.kubernetes.io/master</span><br><span class="line">---</span><br><span class="line">apiServer:</span><br><span class="line">  timeoutForControlPlane: 4m0s</span><br><span class="line">apiVersion: kubeadm.k8s.io/v1beta2</span><br><span class="line">certificatesDir: /etc/kubernetes/pki</span><br><span class="line">clusterName: kubernetes</span><br><span class="line">controllerManager: &#123;&#125;</span><br><span class="line">dns:</span><br><span class="line">  type: CoreDNS</span><br><span class="line">etcd:</span><br><span class="line">  local:</span><br><span class="line">    dataDir: /var/lib/etcd</span><br><span class="line">imageRepository: k8s.gcr.io</span><br><span class="line">kind: ClusterConfiguration</span><br><span class="line">kubernetesVersion: v1.19.16 # k8s安装版本</span><br><span class="line">imageRepository: &quot;registry.aliyuncs.com/google_containers&quot; # 将其指定为阿里云镜像地址</span><br><span class="line">networking:</span><br><span class="line">  dnsDomain: cluster.local</span><br><span class="line">  podSubnet: &quot;10.244.0.0/16&quot; #Kubernetes 支持多种网络方案，而且不同网络方案对--pod-network-cidr 有自己的要求，这里设置为 10.244.0.0/16 是因为我们将使用flannel 网络方案，必须设置成这个 CIDR。</span><br><span class="line">  serviceSubnet: 10.96.0.0/12</span><br><span class="line">scheduler: &#123;&#125;</span><br><span class="line">---</span><br><span class="line">apiVersion: kubeproxy.config.k8s.io/v1alpha1</span><br><span class="line">kind: KubeProxyConfiguration</span><br><span class="line">featureGates:</span><br><span class="line">  SupportIPVSProxyMode: true</span><br><span class="line">mode: ipvs</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">指定配置文件创建k8s集群</font></li>
+</ul>
+<p><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;kubeadm init --config=kubeadm-conf.yaml&lt;/font&gt;</code></p>
+<h2 id="f21393df"><font style="background-color:rgba(255, 255, 255, 0);">命令行创建k8s集群</font></h2>
+---
+
+<p><code>&lt;font style=&quot;background-color:rgba(255, 255, 255, 0);&quot;&gt;[root@master ~]# kubeadm init --apiserver-advertise-address=192.168.10.100 --image-repository registry.aliyuncs.com/google_containers --kubernetes-version v1.19.15 --pod-network-cidr=10.244.0.0/16&lt;/font&gt;</code></p>
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">–apiserver-advertise-address<br></font><font style="background-color:rgba(255, 255, 255, 0);">指明用 Master 的哪个 interface 与 Cluster 的其他节点通信。如果 Master 有多个interface，建议明确指定，如果不指定，kubeadm 会自动选择有默认网关的interface。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">–pod-network-cidr<br></font><font style="background-color:rgba(255, 255, 255, 0);">指定 Pod 网络的范围。Kubernetes 支持多种网络方案，而且不同网络方案对–pod-network-cidr 有自己的要求，这里设置为 10.244.0.0&#x2F;16 是因为我们将使用flannel 网络方案，必须设置成这个 CIDR。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">–image-repository<br></font><font style="background-color:rgba(255, 255, 255, 0);">Kubenetes默认Registries地址是 k8s.gcr.io，在国内并不能访问gcr.io，在1.13版本中我们可以增加–image-repository参数，默认值是k8s.gcr.io，将其指定为阿里云镜像地址：registry.aliyuncs.com&#x2F;google_containers。</font></li>
+<li><font style="background-color:rgba(255, 255, 255, 0);">–kubernetes-version&#x3D;v1.19.15<br></font><font style="background-color:rgba(255, 255, 255, 0);">关闭版本探测，因为它的默认值是stable-1，会导致从</font><a target="_blank" rel="noopener" href="https://dl.k8s.io/release/stable-1.txt"><font style="background-color:rgba(255, 255, 255, 0);">https://dl.k8s.io/release/stable-1.txt</font></a><font style="background-color:rgba(255, 255, 255, 0);">下载最新的版本号</font></li>
+</ul>
+<p><font style="background-color:rgba(255, 255, 255, 0);">执行完毕后控制台打印以下信息：</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Your Kubernetes control-plane has initialized successfully!</span><br><span class="line"></span><br><span class="line">To start using your cluster, you need to run the following as a regular user:</span><br><span class="line"></span><br><span class="line">mkdir -p $HOME/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br><span class="line"></span><br><span class="line">You should now deploy a pod network to the cluster.</span><br><span class="line">Run &quot;kubectl apply -f [podnetwork].yaml&quot; with one of the options listed at:</span><br><span class="line">https://kubernetes.io/docs/concepts/cluster-administration/addons/</span><br><span class="line"></span><br><span class="line">Then you can join any number of worker nodes by running the following on each as root:</span><br><span class="line"></span><br><span class="line">kubeadm join 192.168.10.10:6443 --token abcdef.0123456789abcdef \</span><br><span class="line">--discovery-token-ca-cert-hash sha256:1f0931588ac578637042e96ebede6c086a36105ceb4cdb65399b6f315650b996 </span><br></pre></td></tr></table></figure>
+
+<h2 id="7a2aabc6"><font style="background-color:rgba(255, 255, 255, 0);">根据提示初始化kubectl</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master k8s-install]# mkdir -p $HOME/.kube</span><br><span class="line">[root@k8s-master k8s-install]# cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">[root@k8s-master k8s-install]# chown $(id -u):$(id -g) $HOME/.kube/config</span><br></pre></td></tr></table></figure>
+
+<h2 id="c58c9c6b"><font style="background-color:rgba(255, 255, 255, 0);">启用 kubectl 命令自动补全功能</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master k8s-install]# yum -y install bash-completion</span><br><span class="line">[root@k8s-master k8s-install]# echo &quot;source &lt;(kubectl completion bash)&quot; &gt;&gt; ~/.bash_profile </span><br><span class="line">[root@k8s-master k8s-install]# source ~/.bash_profile </span><br></pre></td></tr></table></figure>
+
+<h2 id="f722bf53"><font style="background-color:rgba(255, 255, 255, 0);">测试kubectl</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master k8s-install]# kubectl get node</span><br><span class="line">NAME         STATUS     ROLES                  AGE   VERSION</span><br><span class="line">k8s-master   NotReady   control-plane,master   46s   v1.19.16</span><br></pre></td></tr></table></figure>
+
+<h1 id="26b442b7"><font style="background-color:rgba(255, 255, 255, 0);">kubeadm部署集群(1.20之后)</font></h1>
+---
+
+<h2 id="5adf0bd8"><font style="background-color:rgba(255, 255, 255, 0);">变化说明</font></h2>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">从1.20开始，开启ipvs配置字段发生了变化，访问官方查看最新版本ipvs开启的正确配置,通过</font><a target="_blank" rel="noopener" href="https://github.com/kubernetes/kubernetes/blob/master/pkg/proxy/ipvs/README.md"><font style="background-color:rgba(255, 255, 255, 0);">https://github.com/kubernetes/kubernetes/blob/master/pkg/proxy/ipvs/README.md</font></a><font style="background-color:rgba(255, 255, 255, 0);">可以看到官方说明</font></p>
+<p><font style="background-color:rgba(255, 255, 255, 0);">从1.22开始，推荐使用containerd作为容器运行时。</font></p>
+<h2 id="a2e6d0cd"><font style="background-color:rgba(255, 255, 255, 0);">init配置文件</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"># cat kubeadm-conf.yaml </span><br><span class="line">apiVersion: kubeadm.k8s.io/v1beta3</span><br><span class="line">bootstrapTokens:</span><br><span class="line">- groups:</span><br><span class="line">  - system:bootstrappers:kubeadm:default-node-token</span><br><span class="line">  token: abcdef.0123456789abcdef</span><br><span class="line">  ttl: 24h0m0s</span><br><span class="line">  usages:</span><br><span class="line">  - signing</span><br><span class="line">  - authentication</span><br><span class="line">kind: InitConfiguration</span><br><span class="line">localAPIEndpoint:</span><br><span class="line">  advertiseAddress: 192.168.10.10  #修改为控制节点IP（VIP）</span><br><span class="line">  bindPort: 6443</span><br><span class="line">nodeRegistration:</span><br><span class="line">  criSocket: unix:///run/containerd/containerd.sock  #使用containerd为容器运行时</span><br><span class="line">	# criSocket: /var/run/dockershim.sock  #使用docker为容器运行时</span><br><span class="line">  imagePullPolicy: IfNotPresent</span><br><span class="line">  name: k8s-master     #修改为控制节点主机名</span><br><span class="line">  taints: null</span><br><span class="line">---</span><br><span class="line">apiServer:</span><br><span class="line">  timeoutForControlPlane: 4m0s</span><br><span class="line">apiVersion: kubeadm.k8s.io/v1beta3</span><br><span class="line">certificatesDir: /etc/kubernetes/pki</span><br><span class="line">clusterName: kubernetes</span><br><span class="line">controllerManager: &#123;&#125;</span><br><span class="line">dns: &#123;&#125;</span><br><span class="line">etcd:</span><br><span class="line">  local:</span><br><span class="line">    dataDir: /var/lib/etcd</span><br><span class="line">imageRepository: registry.aliyuncs.com/google_containers  #修改为阿里镜像地址</span><br><span class="line">kind: ClusterConfiguration</span><br><span class="line">kubernetesVersion: 1.24.13  #版本</span><br><span class="line">networking:</span><br><span class="line">  dnsDomain: cluster.local</span><br><span class="line">  podSubnet: 10.244.0.0/16   #指定Pod网段</span><br><span class="line">  serviceSubnet: 10.96.0.0/12  #指定Service网段</span><br><span class="line">scheduler: &#123;&#125;</span><br><span class="line">---</span><br><span class="line">apiVersion: kubeproxy.config.k8s.io/v1alpha1</span><br><span class="line">kind:  KubeProxyConfiguration</span><br><span class="line">mode: ipvs</span><br><span class="line">---</span><br><span class="line">apiVersion: kubelet.config.k8s.io/v1beta1</span><br><span class="line">kind: KubeletConfiguration</span><br><span class="line">cgroupDriver: systemd</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="background-color:rgba(255, 255, 255, 0);">如果初始化时出现以下报错，先停止master节点的kubelet</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">error execution phase preflight: [preflight] Some fatal errors occurred:</span><br><span class="line">        [ERROR Port-10250]: Port 10250 is in use</span><br></pre></td></tr></table></figure>
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">[root@k8s-master k8s-install]# systemctl stop kubelet</font></p>
+<h1 id="86e19ab6"><font style="background-color:rgba(255, 255, 255, 0);">初始化失败解决</font></h1>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">如果因为配置文件异常导致集群初始化失败，可执行如下命令</font></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># kubeadm reset </span><br><span class="line"># rm -rf $HOME/.kube/config</span><br></pre></td></tr></table></figure>
+
+<h1 id="a5188f63"><font style="background-color:rgba(255, 255, 255, 0);">启用基于flannel的Pod网络</font></h1>
+---
+
+<p><font style="background-color:rgba(255, 255, 255, 0);">项目地址：</font><a target="_blank" rel="noopener" href="https://github.com/flannel-io/flannel"><font style="background-color:rgba(255, 255, 255, 0);">https://github.com/flannel-io/flannel</font></a></p>
+<h2 id="1616c281"><font style="background-color:rgba(255, 255, 255, 0);">下载配置文件</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# wget https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml </span><br></pre></td></tr></table></figure>
+
+<h2 id="c3f7e4cd"><font style="background-color:rgba(255, 255, 255, 0);">启用flannel</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# kubectl apply -f kube-flannel.yml  </span><br><span class="line"># 如果机器有多块物理网卡，需要指定网卡名称</span><br><span class="line">containers:</span><br><span class="line">- name: kube-flannel</span><br><span class="line">    - args:</span><br><span class="line">    - --ip-masq</span><br><span class="line">    - --kube-subnet-mgr</span><br><span class="line">    - --iface=bond0 # 添加这行</span><br></pre></td></tr></table></figure>
+
+<h2 id="5655008a"><font style="background-color:rgba(255, 255, 255, 0);">验证操作</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master k8s-install]# kubectl get pods -A</span><br><span class="line">NAMESPACE      NAME                                 READY   STATUS    RESTARTS   AGE</span><br><span class="line">kube-flannel   kube-flannel-ds-5tjkb                1/1     Running   0          9m1s</span><br><span class="line">kube-system    coredns-6d56c8448f-vnrqf             1/1     Running   0          19m</span><br><span class="line">kube-system    coredns-6d56c8448f-x9q75             1/1     Running   0          19m</span><br><span class="line">kube-system    etcd-k8s-master                      1/1     Running   0          20m</span><br><span class="line">kube-system    kube-apiserver-k8s-master            1/1     Running   0          20m</span><br><span class="line">kube-system    kube-controller-manager-k8s-master   1/1     Running   0          20m</span><br><span class="line">kube-system    kube-proxy-9df97                     1/1     Running   0          19m</span><br><span class="line">kube-system    kube-scheduler-k8s-master            1/1     Running   0          20m</span><br></pre></td></tr></table></figure>
+
+<h1 id="598a8888"><font style="background-color:rgba(255, 255, 255, 0);">其他node节点加入集群</font></h1>
+---
+
+<h2 id="b7eec277"><font style="background-color:rgba(255, 255, 255, 0);">将节点加入到集群</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-work1 ~]# kubeadm join 192.168.10.10:6443 --token abcdef.0123456789abcdef --discovery-token-ca-cert-hash sha256:1f0931588ac578637042e96ebede6c086a36105ceb4cdb65399b6f315650b996 </span><br></pre></td></tr></table></figure>
+
+<h2 id="e1dc7e3a"><font style="background-color:rgba(255, 255, 255, 0);">查看集群信息</font></h2>
+---
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master ~]# kubectl get node</span><br><span class="line">NAME         STATUS   ROLES                  AGE     VERSION</span><br><span class="line">k8s-master   Ready    control-plane,master   5m26s   v1.24.13</span><br><span class="line">k8s-work1    Ready    &lt;none&gt;                 3m39s   v1.24.13</span><br><span class="line">k8s-work2    Ready    &lt;none&gt;                 3m48s   v1.24.13</span><br><span class="line">[root@k8s-master ~]# kubectl get pod -A</span><br><span class="line">NAMESPACE      NAME                                 READY   STATUS    RESTARTS   AGE</span><br><span class="line">kube-flannel   kube-flannel-ds-22hrr                1/1     Running   2          17m</span><br><span class="line">kube-flannel   kube-flannel-ds-5tjkb                1/1     Running   2          36m</span><br><span class="line">kube-flannel   kube-flannel-ds-kmtnk                1/1     Running   0          84s</span><br><span class="line">kube-system    coredns-6d56c8448f-vnrqf             1/1     Running   3          47m</span><br><span class="line">kube-system    coredns-6d56c8448f-x9q75             1/1     Running   2          47m</span><br><span class="line">kube-system    etcd-k8s-master                      1/1     Running   2          47m</span><br><span class="line">kube-system    kube-apiserver-k8s-master            1/1     Running   2          47m</span><br><span class="line">kube-system    kube-controller-manager-k8s-master   1/1     Running   2          47m</span><br><span class="line">kube-system    kube-proxy-6wmsl                     1/1     Running   2          17m</span><br><span class="line">kube-system    kube-proxy-9df97                     1/1     Running   2          47m</span><br><span class="line">kube-system    kube-proxy-fkkm6                     1/1     Running   0          84s</span><br><span class="line">kube-system    kube-scheduler-k8s-master            1/1     Running   2          47m</span><br></pre></td></tr></table></figure>
+
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/idea.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Xiaoxi</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/jack-xi-jack" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1643699428@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/Istio/" title="Istio">Istio</a><time datetime="2025-03-08T10:00:00.000Z" title="Created 2025-03-08 18:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/%E5%85%A5%E9%97%A8%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E2%80%94%E2%80%94consul/" title="入门服务注册中心————consul">入门服务注册中心————consul</a><time datetime="2025-03-08T09:00:00.000Z" title="Created 2025-03-08 17:00:00">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/1.kubeadm%E9%AB%98%E5%8F%AF%E7%94%A8%E9%83%A8%E7%BD%B2/" title="高可用部署">高可用部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2025-3-5%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="第一篇文章">第一篇文章</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/2.ETCD%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" title="安装部署">安装部署</a><time datetime="2025-03-05T09:00:00.000Z" title="Created 2025-03-05 17:00:00">2025-03-05</time></div></div></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/03/">
+            <span class="card-archive-list-date">
+              March 2025
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">7</div></div><div class="webinfo-item"><div class="item-name">Total Word Count :</div><div class="item-count">26.6k</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-03-11T14:50:52.676Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By Xiaoxi</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script defer src="https://npm.elemecdn.com/tzy-blog/lib/js/other/sakura.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      const usePjax = true
+      true 
+        ? (usePjax ? pjax.loadUrl('/404.html') : window.location.href = '/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
